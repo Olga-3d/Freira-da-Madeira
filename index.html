@@ -1,902 +1,86 @@
 <!DOCTYPE html>
-
-<html class="h-full" lang="pt"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<title>Missão Freira - Protótipo Interativo com Áudio Sintetizado</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Missão Freira — Protótipo funcional</title>
+<meta name="description" content="Missão Freira: protótipo funcional de uma app gamificada que leva visitantes a lugares calmos, ofícios e produtores das zonas rurais da Madeira. Projeto académico SGM, UMa, Desafio 8 Startup Madeira (OpenInnoMAC).">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-          },
-          colors: {
-            primary: { DEFAULT: '#1E5F8B', dark: '#134363', light: '#E8F4FC' },
-            secondary: { DEFAULT: '#6DA65D', dark: '#4c7a3f', light: '#EDF7EB' },
-            terracotta: { DEFAULT: '#BF5841', dark: '#9c4430', light: '#FDF1EE' },
-            slateDark: '#3B4E59',
-          }
-        }
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+      colors: {
+        primary:    { DEFAULT: '#1E5F8B', dark: '#134363', light: '#E8F4FC' },
+        secondary:  { DEFAULT: '#6DA65D', dark: '#356A29', light: '#EDF7EB' },
+        terracotta: { DEFAULT: '#BF5841', dark: '#7B2613', light: '#FDF1EE' },
+        basalto: '#3A4750',
+        pena: '#E8C547'
       }
-    }
-  </script>
+    } }
+  }
+</script>
 <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    .screen-view {
-      display: none;
-      opacity: 0;
-      transform: scale(0.985);
-      transition: opacity 0.28s ease, transform 0.28s ease;
-    }
-    .screen-view.active {
-      display: block;
-      opacity: 1;
-      transform: scale(1);
-    }
-    @keyframes pulseSoft {
-      0%, 100% { transform: scale(1); opacity: 0.95; }
-      50% { transform: scale(1.05); opacity: 1; }
-    }
-    .animate-pulse-soft {
-      animation: pulseSoft 3s ease-in-out infinite;
-    }
-    @keyframes floatSlow {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
-    }
-    .animate-float {
-      animation: floatSlow 3.5s ease-in-out infinite;
-    }
-    /* Animated Soundwave Equalizer Bars */
-    .eq-bar {
-      width: 3px;
-      border-radius: 9999px;
-      transition: height 0.15s ease;
-      background: currentColor;
-    }
-    @keyframes eqAnim1 { 0%, 100% { height: 4px; } 50% { height: 16px; } }
-    @keyframes eqAnim2 { 0%, 100% { height: 12px; } 50% { height: 5px; } }
-    @keyframes eqAnim3 { 0%, 100% { height: 7px; } 50% { height: 18px; } }
-    @keyframes eqAnim4 { 0%, 100% { height: 14px; } 50% { height: 6px; } }
-    .eq-active .eq-1 { animation: eqAnim1 0.7s infinite ease-in-out; }
-    .eq-active .eq-2 { animation: eqAnim2 0.85s infinite ease-in-out 0.1s; }
-    .eq-active .eq-3 { animation: eqAnim3 0.65s infinite ease-in-out 0.2s; }
-    .eq-active .eq-4 { animation: eqAnim4 0.9s infinite ease-in-out 0.15s; }
-  </style>
+  body { -webkit-tap-highlight-color: transparent; }
+  #vp { scroll-behavior: auto; }
+  .fade-in { animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .float { animation: float 3.4s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  .feather-in { animation: featherIn 1.1s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes featherIn { 0% { opacity: 0; transform: translateY(-60px) rotate(-30deg) scale(.6); } 70% { opacity: 1; transform: translateY(4px) rotate(6deg) scale(1.08); } 100% { transform: none; } }
+  .scanline { animation: scan 1.5s linear infinite; }
+  @keyframes scan { 0% { top: 8%; } 50% { top: 88%; } 100% { top: 8%; } }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  button:focus-visible { outline: 3px solid #E8C547; outline-offset: 2px; }
+</style>
 </head>
-<body class="bg-slate-900 text-slate-800 antialiased flex flex-col items-center justify-start min-h-screen py-0 sm:py-6 px-0 sm:px-4 pb-24 sm:pb-8">
-<!-- Floating Prototype Navigation Deck -->
-<div class="fixed top-2 z-50 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-full px-3 py-1.5 shadow-xl flex items-center gap-1.5 text-xs text-white max-w-[95vw] overflow-x-auto scrollbar-none">
-<span class="text-amber-400 font-bold px-1 flex items-center gap-1">
-<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"></path></svg>
-    Fluxo:
-  </span>
-<button class="proto-nav px-2.5 py-1 rounded-full text-xs font-semibold transition bg-primary text-white" id="nav-btn-splash" onclick="goTo('screen-splash')">1. Início</button>
-<button class="proto-nav px-2.5 py-1 rounded-full text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700" id="nav-btn-menu" onclick="goTo('screen-menu')">2. Menu</button>
-<button class="proto-nav px-2.5 py-1 rounded-full text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700" id="nav-btn-instructions" onclick="goTo('screen-instructions')">3. Tutorial</button>
-<button class="proto-nav px-2.5 py-1 rounded-full text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700" id="nav-btn-checkin" onclick="goTo('screen-checkin')">4. Check-in</button>
-<button class="proto-nav px-2.5 py-1 rounded-full text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700" id="nav-btn-reward" onclick="goTo('screen-reward')">5. Vitória</button>
-<button class="proto-nav px-2.5 py-1 rounded-full text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700" id="nav-btn-pause" onclick="goTo('screen-pause')">6. Pausa</button>
-<button class="proto-nav px-2.5 py-1 rounded-full text-xs font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700" id="nav-btn-options" onclick="goTo('screen-options')">7. Opções</button>
-</div>
-<!-- Mobile Device Frame Container -->
-<div class="w-full max-w-[420px] bg-[#f5faff] min-h-screen sm:min-h-[860px] sm:max-h-[920px] sm:rounded-[36px] shadow-2xl overflow-y-auto relative sm:border-[8px] sm:border-slate-800 flex flex-col pt-12 sm:pt-0">
-<!-- Global App Top Status Bar (Simulated Mobile Chrome) -->
-<div class="sticky top-0 z-40 bg-white/95 backdrop-blur-md px-4 py-2 flex items-center justify-between border-b border-slate-100 text-xs text-slate-700">
-<div class="flex items-center gap-2">
-<button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center transition" onclick="goTo('screen-pause'); SoundSystem.playPause();" title="Pausar Missão">
-<svg class="w-3.5 h-3.5 text-slate-700" fill="currentColor" viewbox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
-</button>
-<span class="font-bold text-slate-800 tracking-tight text-xs flex items-center gap-1">
-<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        Missão Freira
-      </span>
-</div>
-<!-- Audio Pill & Controls in Header -->
-<div class="flex items-center gap-1.5">
-<!-- Mini Audio Status Indicator Button -->
-<button class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold active:scale-95 transition" id="header-audio-badge" onclick="toggleAudioHud()" title="Controlo de Som Web Audio">
-<span class="flex items-end gap-0.5 h-3.5" id="header-eq-bars">
-<span class="eq-bar eq-1 h-1.5 bg-emerald-600"></span>
-<span class="eq-bar eq-2 h-3 bg-emerald-600"></span>
-<span class="eq-bar eq-3 h-2 bg-emerald-600"></span>
-</span>
-<span id="header-audio-label">Som ON</span>
-</button>
-<button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center transition" onclick="goTo('screen-options')" title="Definições e Opções">
-<svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-</button>
-<div class="bg-primary-light text-primary font-bold px-2 py-0.5 rounded-full flex items-center gap-1 text-[11px]">
-<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-<span id="global-timer">28m</span>
-</div>
-</div>
-</div>
-<!-- ======================================================== -->
-<!-- 1. ECRÃ DE ABERTURA / SPLASH (SCREEN_6)                   -->
-<!-- ======================================================== -->
-<div class="screen-view active p-4 space-y-4" id="screen-splash">
-<!-- Top Badges -->
-<div class="flex items-center justify-between text-[11px] font-semibold">
-<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full flex items-center gap-1 border border-emerald-200">
-        🌱 Madeira Sustentável
-      </span>
-<span class="bg-slate-200/80 text-slate-700 px-2.5 py-1 rounded-full flex items-center gap-1">
-        📶 Modo Trilho 100% Offline
-      </span>
-</div>
-<!-- Illustrated Hero Card with Bird Mascot -->
-<div class="relative rounded-3xl overflow-hidden shadow-lg bg-gradient-to-b from-[#2B1B17] via-[#5C2B22] to-[#1E3A4C] p-5 text-center text-white min-h-[260px] flex flex-col justify-between items-center cursor-pointer" onclick="SoundSystem.playBirdChirp()">
-<!-- Clouds / Mountain Silhouettes in CSS/SVG -->
-<div class="absolute inset-0 opacity-25 pointer-events-none bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-amber-200 via-transparent to-transparent"></div>
-<div class="w-full flex justify-between items-center text-xs text-amber-200/80 font-mono">
-<span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">Toca no pássaro 🔊</span>
-<span>🪶 🪶</span>
-</div>
-<!-- Animated Mascot -->
-<div class="relative my-auto flex flex-col items-center">
-<div class="w-28 h-28 relative animate-float">
-<!-- Freira-da-Madeira SVG Graphic -->
-<svg class="w-full h-full drop-shadow-xl" viewbox="0 0 160 140">
-<!-- Body -->
-<ellipse cx="80" cy="85" fill="#ffffff" rx="55" ry="38" stroke="#1f2937" stroke-width="3"></ellipse>
-<!-- Back / Wing Dark Slate -->
-<path d="M 35 75 Q 80 40 120 70 Q 75 105 35 75 Z" fill="#3B4E59" stroke="#1f2937" stroke-width="3"></path>
-<!-- Green Feather Crest / Detail -->
-<path d="M 45 75 Q 75 55 105 75 Q 75 92 45 75 Z" fill="#6DA65D"></path>
-<!-- Head -->
-<circle cx="115" cy="55" fill="#1E5F8B" r="26" stroke="#1f2937" stroke-width="3"></circle>
-<!-- Eye White & Pupil -->
-<circle cx="123" cy="52" fill="#ffffff" r="8"></circle>
-<circle cx="125" cy="52" fill="#111827" r="4"></circle>
-<circle cx="127" cy="50" fill="#ffffff" r="1.5"></circle>
-<!-- Beak -->
-<polygon fill="#2d3748" points="138,54 154,60 138,66"></polygon>
-<!-- Little Tail -->
-<polygon fill="#3B4E59" points="26,80 10,70 18,92" stroke="#1f2937" stroke-width="2"></polygon>
-<!-- Legs -->
-<line stroke="#111827" stroke-width="3" x1="68" x2="68" y1="120" y2="132"></line>
-<line stroke="#111827" stroke-width="3" x1="90" x2="90" y1="120" y2="132"></line>
-</svg>
-<!-- Floating Little Heart -->
-<div class="absolute -top-1 right-2 text-rose-400 text-sm animate-bounce">❤️</div>
-</div>
-<div class="mt-2 bg-white/95 text-slate-800 text-xs font-bold px-3.5 py-1.5 rounded-full shadow-md border border-slate-200">
-          "Olá! Vem caminhar comigo?"
-        </div>
-</div>
-<div class="text-[11px] text-slate-300 font-medium">
-        🍃 Santuário das Alturas • Laurissilva Viva
-      </div>
-</div>
-<!-- Title & Mission Pitch -->
-<div class="text-center space-y-1.5 pt-1">
-<span class="inline-block bg-sky-100 text-primary font-bold text-[11px] px-3 py-0.5 rounded-full">
-        ⏱️ Jogo de Conservação dos Trilhos
-      </span>
-<h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">
-        Missão Freira
-      </h1>
-<h2 class="text-sm font-bold text-secondary-dark">
-        Em Busca dos Recantos de Paz da Madeira
-      </h2>
-<p class="text-xs text-slate-600 px-2 leading-relaxed">
-        Desvia-te da multidão dos picos, protege os ninhos da Freira e troca passos tranquilos por iguarias locais da serra.
-      </p>
-</div>
-<!-- Feature Pill Cards -->
-<div class="grid grid-cols-3 gap-2 pt-1 text-center">
-<div class="bg-sky-50 border border-sky-100 rounded-2xl p-2.5 shadow-sm active:scale-95 transition cursor-pointer" onclick="SoundSystem.playClick()">
-<div class="text-lg">🏔️</div>
-<div class="text-xs font-bold text-slate-800 mt-1">Picos &amp; Nuvens</div>
-<div class="text-[10px] text-primary font-semibold">Evita Filas</div>
-</div>
-<div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-2.5 shadow-sm active:scale-95 transition cursor-pointer" onclick="SoundSystem.playBirdChirp()">
-<div class="text-lg">🌲</div>
-<div class="text-xs font-bold text-slate-800 mt-1">Laurissilva</div>
-<div class="text-[10px] text-secondary-dark font-semibold">Ar Puro</div>
-</div>
-<div class="bg-amber-50 border border-amber-100 rounded-2xl p-2.5 shadow-sm active:scale-95 transition cursor-pointer" onclick="SoundSystem.playFanfare()">
-<div class="text-lg">🥖</div>
-<div class="text-xs font-bold text-slate-800 mt-1">Recompensas</div>
-<div class="text-[10px] text-amber-700 font-semibold">Bolo do Caco</div>
-</div>
-</div>
-<!-- Active Mission Highlight Banner -->
-<div class="bg-sky-50/90 border border-sky-200/80 rounded-2xl p-3 flex items-center justify-between shadow-sm">
-<div class="flex items-center gap-2.5">
-<div class="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold text-sm shadow">
-          📍
-        </div>
-<div>
-<div class="text-xs font-bold text-slate-800">Missão Ativa da Semana</div>
-<div class="text-[11px] text-slate-500">Ponta do Pargo • <span class="text-emerald-600 font-bold">+2 Penas Raras</span></div>
-</div>
-</div>
-<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-200">
-        CALMO
-      </span>
-</div>
-<!-- Interactive Flow CTA Buttons -->
-<div class="space-y-2 pt-2 pb-4">
-<button class="w-full bg-primary hover:bg-primary-dark active:scale-[0.98] text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-sky-900/20 flex items-center justify-center gap-2 transition" onclick="SoundSystem.playWhoosh(); goTo('screen-menu')">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        Começar Aventura
-      </button>
-<button class="w-full bg-slate-100 hover:bg-slate-200 active:scale-[0.98] text-slate-700 font-bold py-3 px-4 rounded-2xl flex items-center justify-center gap-2 transition text-xs" onclick="SoundSystem.playClick(); goTo('screen-instructions')">
-        📖 Ver Tutorial e Instruções (Como Jogar)
-      </button>
-</div>
-<div class="text-center text-[10px] text-slate-400 pb-2">
-      Apoio oficial Startup Madeira &amp; Parque Natural • Madeira 2025
+<body class="bg-slate-900 text-slate-800 antialiased min-h-screen flex flex-col items-center sm:py-4">
+
+<!-- Navegação do protótipo (só ecrãs grandes: útil na defesa) -->
+<nav id="proto-strip" aria-label="Saltar para ecrã" class="hidden sm:flex w-full max-w-5xl mb-3 px-3 gap-1.5 overflow-x-auto no-scrollbar text-xs"></nav>
+
+<div id="phone" class="relative w-full max-w-[420px] h-[100dvh] sm:h-[860px] bg-[#F5FAFF] sm:rounded-[36px] sm:border-[8px] sm:border-slate-800 overflow-hidden flex flex-col shadow-2xl">
+
+  <!-- Barra superior -->
+  <header id="appbar" class="shrink-0 bg-white/95 backdrop-blur border-b border-slate-100 px-3 py-2.5 flex items-center gap-1.5">
+    <button id="btn-back" onclick="back()" class="w-8 h-8 shrink-0 rounded-full hover:bg-slate-100 flex items-center justify-center text-xl text-slate-700" aria-label="Voltar">←</button>
+    <div class="flex-1 min-w-0">
+      <div class="text-[11px] font-bold tracking-wide text-secondary-dark uppercase">Freira Madeira</div>
+      <h1 id="appbar-title" class="text-[17px] font-bold text-slate-900 truncate leading-tight">Missão Freira</h1>
     </div>
-</div>
-<!-- ======================================================== -->
-<!-- 2. MENU PRINCIPAL (SCREEN_16)                             -->
-<!-- ======================================================== -->
-<div class="screen-view p-4 space-y-4" id="screen-menu">
-<!-- Scenic Header Card -->
-<div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-sky-700 to-indigo-950 text-white p-4 shadow-md">
-<div class="flex items-center justify-between text-xs">
-<span class="bg-emerald-500/80 backdrop-blur-sm px-2.5 py-0.5 rounded-full text-[11px] font-semibold">
-          🌿 Refúgio Natural
-        </span>
-<span class="text-sky-200 font-mono text-[11px]">
-          🌡️ 16°C Sereno
-        </span>
-</div>
-<div class="mt-4 flex items-center gap-3">
-<div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-3xl shadow cursor-pointer" onclick="SoundSystem.playBirdChirp()">
-          🕊️
-        </div>
-<div>
-<h2 class="text-lg font-black tracking-tight leading-snug">Missão Freira</h2>
-<p class="text-xs text-sky-100">Guardião dos Trilhos de Altitude</p>
-</div>
-</div>
-</div>
-<!-- Main Action 1: Novo Jogo -->
-<div class="cursor-pointer group bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-3xl p-4 shadow-lg shadow-emerald-900/20 active:scale-[0.98] transition flex items-center justify-between" onclick="SoundSystem.playWhoosh(); goTo('screen-instructions')">
-<div class="flex items-center gap-3.5">
-<div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl">
-          🌱
-        </div>
-<div>
-<div class="flex items-center gap-2">
-<h3 class="font-extrabold text-base">Novo Jogo</h3>
-<span class="bg-emerald-400/30 text-white text-[10px] px-2 py-0.2 rounded-full font-bold">Início</span>
-</div>
-<p class="text-xs text-emerald-100">Explora rotas virgens e trilhos secretos</p>
-</div>
-</div>
-<div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:translate-x-1 transition">
-        ▶
-      </div>
-</div>
-<!-- Main Action 2: Continuar Aventura (Check-in direto) -->
-<div class="cursor-pointer group bg-primary hover:bg-primary-dark text-white rounded-3xl p-4 shadow-lg shadow-sky-900/20 active:scale-[0.98] transition space-y-3" onclick="SoundSystem.playWhoosh(); goTo('screen-checkin')">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-3.5">
-<div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl">
-            🧭
-          </div>
-<div>
-<h3 class="font-extrabold text-base">Continuar Aventura</h3>
-<p class="text-xs text-sky-200">Último ponto: Ponta do Pargo</p>
-</div>
-</div>
-<div class="text-lg group-hover:translate-x-1 transition">➔</div>
-</div>
-<!-- Quest progress indicator -->
-<div class="bg-black/20 rounded-xl p-2.5">
-<div class="flex justify-between text-xs text-sky-200 font-semibold mb-1">
-<span>🪶 3/10 penas restauradas</span>
-<span class="font-bold text-white">30%</span>
-</div>
-<div class="w-full bg-white/20 rounded-full h-2 overflow-hidden">
-<div class="bg-amber-400 h-2 rounded-full" style="width: 30%"></div>
-</div>
-</div>
-</div>
-<!-- Secondary 2-Column Grid -->
-<div class="grid grid-cols-2 gap-3">
-<button class="bg-white hover:bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 text-left shadow-sm active:scale-[0.98] transition" onclick="SoundSystem.playClick(); goTo('screen-options')">
-<div class="w-9 h-9 rounded-xl bg-sky-100 text-primary flex items-center justify-center text-lg mb-2">
-          ⚙️
-        </div>
-<div class="font-bold text-slate-800 text-xs">Opções</div>
-<div class="text-[11px] text-slate-500">Áudio, Mapa e Idiomas</div>
-</button>
-<button class="bg-white hover:bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 text-left shadow-sm active:scale-[0.98] transition" onclick="SoundSystem.playClick(); goTo('screen-instructions')">
-<div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg mb-2">
-          📖
-        </div>
-<div class="font-bold text-slate-800 text-xs">Instruções</div>
-<div class="text-[11px] text-slate-500">Regras do Ecotrilho</div>
-</button>
-</div>
-<!-- Partner Perk Card -->
-<div class="bg-amber-50/80 border border-amber-200/70 rounded-2xl p-3.5 flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-amber-200/80 text-amber-800 flex items-center justify-center text-xl shrink-0">
-        🧺
-      </div>
-<div>
-<h4 class="text-xs font-bold text-slate-800">Comunidades Parceiras</h4>
-<p class="text-[11px] text-slate-600 leading-snug">
-          Troca penas recolhidas por delícias locais em padarias da serra.
-        </p>
-</div>
-</div>
-<!-- Exit Button -->
-<div class="text-center pt-2 pb-4">
-<button class="text-xs text-rose-600 hover:text-rose-700 font-bold inline-flex items-center gap-1.5 py-1 px-3 rounded-lg hover:bg-rose-50 transition" onclick="SoundSystem.playClick(); goTo('screen-splash')">
-<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-        Sair da Expedição (Voltar ao Início)
-      </button>
-</div>
-</div>
-<!-- ======================================================== -->
-<!-- 3. INSTRUÇÕES E TUTORIAL (SCREEN_2)                      -->
-<!-- ======================================================== -->
-<div class="screen-view p-4 space-y-4" id="screen-instructions">
-<!-- Header with step counter -->
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-8 h-8 rounded-xl bg-emerald-100 text-secondary-dark flex items-center justify-center text-base font-bold">
-          📗
-        </span>
-<span class="text-xs font-bold text-secondary-dark uppercase tracking-wider" id="tut-header-label">Caderno de Campo</span>
-</div>
-<span class="bg-sky-100 text-primary font-bold text-[11px] px-2.5 py-1 rounded-full" id="tut-steps-badge">5 Passos Rápidos</span>
-</div>
-<!-- Language Switcher Bar with active translations & chime! -->
-<div class="bg-white border border-slate-200 rounded-2xl p-2 flex items-center justify-between shadow-sm">
-<span class="text-xs font-bold text-slate-600 flex items-center gap-1 pl-1">
-        🌐 <span id="tut-lang-label">Idioma:</span>
-</span>
-<div class="flex items-center gap-1">
-<button class="tlang-btn bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-xl transition" id="tlang-pt" onclick="setTutorialLanguage('pt')">
-          🇵🇹 PT
-        </button>
-<button class="tlang-btn bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold px-2.5 py-1 rounded-xl transition" id="tlang-en" onclick="setTutorialLanguage('en')">
-          🇬🇧 EN
-        </button>
-<button class="tlang-btn bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold px-2.5 py-1 rounded-xl transition" id="tlang-fr" onclick="setTutorialLanguage('fr')">
-          🇫🇷 FR
-        </button>
-</div>
-</div>
-<!-- Hero Card -->
-<div class="bg-gradient-to-br from-sky-50 to-white border border-sky-100 rounded-3xl p-4 shadow-sm space-y-2">
-<span class="bg-sky-200/80 text-primary-dark font-extrabold text-[10px] px-2.5 py-0.5 rounded-full" id="tut-badge-official">MANUAL OFICIAL</span>
-<h2 class="text-lg font-black text-slate-900 leading-tight" id="tut-title">Como Jogar a Missão Freira</h2>
-<p class="text-xs text-slate-600 leading-relaxed" id="tut-desc">
-        Protege o mar de nuvens, alivia os picos mais cheios e ajuda a nossa ave rara a recuperar as suas penas sagradas.
-      </p>
-</div>
-<!-- Step Cards (1 to 5) -->
-<div class="space-y-3">
-<!-- Step 1 -->
-<div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 shadow-sm space-y-2">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">1</span>
-<h3 class="font-bold text-xs text-slate-900" id="step1-title">Descobre no Mapa</h3>
-</div>
-<span class="text-[10px] text-slate-400 font-mono">01/05</span>
-</div>
-<p class="text-[11px] text-slate-600 leading-relaxed" id="step1-desc">
-          Os pontos cinzentos estão sobrelotados (evita-os!). Escolhe os pontos verdes calmos recomendados com carinho pela Freira.
-        </p>
-<div class="grid grid-cols-2 gap-2 pt-1 text-center text-[10px] font-bold">
-<div class="bg-rose-50 text-rose-700 border border-rose-200 rounded-xl p-2">
-<div>👥 Picos Cheios: 92%</div>
-<div class="text-[9px] text-slate-500 font-normal">Pico do Arieiro</div>
-</div>
-<div class="bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl p-2">
-<div>🌿 Paz Freira: 18%</div>
-<div class="text-[9px] text-slate-500 font-normal">Ponta do Pargo</div>
-</div>
-</div>
-</div>
-<!-- Step 2 -->
-<div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 shadow-sm space-y-2">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">2</span>
-<h3 class="font-bold text-xs text-slate-900" id="step2-title">Explora e Caminha</h3>
-</div>
-<span class="bg-terracotta-light text-terracotta text-[10px] font-bold px-2 py-0.5 rounded-full">Bónus x2</span>
-</div>
-<p class="text-[11px] text-slate-600 leading-relaxed" id="step2-desc">
-          Dirige-te à rota tranquila. Ganhas o dobro dos pontos (x2) se visitares fora das horas de ponta da ilha!
-        </p>
-</div>
-<!-- Step 3 -->
-<div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 shadow-sm space-y-2">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">3</span>
-<h3 class="font-bold text-xs text-slate-900" id="step3-title">Faz Check-in no Marco</h3>
-</div>
-<span class="text-emerald-700 text-[10px] font-bold">✓ Validação Fácil</span>
-</div>
-<p class="text-[11px] text-slate-600 leading-relaxed" id="step3-desc">
-          Ao chegares, confirma a visita apontando a câmara para o QR Code de madeira no marco do trilho ou através do GPS.
-        </p>
-</div>
-<!-- Step 4 -->
-<div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 shadow-sm space-y-2">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">4</span>
-<h3 class="font-bold text-xs text-slate-900" id="step4-title">Devolve Penas à Freira</h3>
-</div>
-<span class="bg-sky-100 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">Meta: 10 Penas</span>
-</div>
-<p class="text-[11px] text-slate-600 leading-relaxed" id="step4-desc">
-          Cada lugar calmo devolve uma pena mágica ao peito da ave. Recolhe as 10 para restaurar a plumagem e salvar o ninho!
-        </p>
-</div>
-<!-- Step 5 -->
-<div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 shadow-sm space-y-2">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">5</span>
-<h3 class="font-bold text-xs text-slate-900" id="step5-title">Desfruta de Prémios Reais</h3>
-</div>
-<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Comércio Local</span>
-</div>
-<p class="text-[11px] text-slate-600 leading-relaxed" id="step5-desc">
-          Usa os teus pontos em dezenas de parceiros da ilha: bolo do caco quentinho, mel-de-cana e artesanato de vime.
-        </p>
-</div>
-</div>
-<!-- Action Button to Launch Check-in -->
-<div class="pt-2 pb-4 space-y-2">
-<button class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg active:scale-[0.98] transition flex items-center justify-center gap-2 text-sm" id="tut-cta-btn" onclick="SoundSystem.playWhoosh(); goTo('screen-checkin')">
-<span>Entendido, Fazer Check-in!</span> ➔
-      </button>
-<button class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-xl text-xs transition" onclick="SoundSystem.playClick(); goTo('screen-menu')">
-        Voltar ao Menu Principal
-      </button>
-</div>
-</div>
-<!-- ======================================================== -->
-<!-- 4. ECRÃ DE CHECK-IN / CÂMARA (SCREEN_8)                  -->
-<!-- ======================================================== -->
-<div class="screen-view relative bg-slate-900 min-h-[700px] flex flex-col justify-between overflow-hidden" id="screen-checkin">
-<!-- Simulated Camera Background with Madeira Cliff -->
-<div class="absolute inset-0 bg-cover bg-center opacity-85" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBO8K3fFQTc5Xoh3wav0CQfGHK1b238HgV-hc4y9t82iuL74-bi1Guvvf-utCfuoHWImjW2tjO4gdsWzDbVYAgWisv3TFQUw5cbZwtm5VyANV_ncmwhuMXfONTgMrOQTfvYhQ9WoqTFEoJLei36azij8MBX-O_CY5h4ATzMSlsvVLEA3rUjkYQkaXmIE6Ba_QshkgjG_kgRgWiwJnRD1RdQapytmZ73LqeLLyQs1yM');">
-</div>
-<!-- Top Overlay Controls -->
-<div class="relative z-10 p-4 flex items-center justify-between text-white">
-<button class="w-9 h-9 rounded-full bg-black/50 backdrop-blur border border-white/20 flex items-center justify-center text-white active:scale-95" onclick="SoundSystem.playClick(); goTo('screen-menu')">
-        ✕
-      </button>
-<span class="bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs font-bold border border-white/20 flex items-center gap-1.5">
-<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        Modo Verificação de Marco
-      </span>
-<button class="w-9 h-9 rounded-full bg-black/50 backdrop-blur border border-white/20 flex items-center justify-center text-white active:scale-95" onclick="SoundSystem.playShutter(); alert('⚡ Flash acionado no marco do trilho!')">
-        ⚡
-      </button>
-</div>
-<!-- Center Reticle / QR Target Area -->
-<div class="relative z-10 my-auto flex flex-col items-center justify-center px-6">
-<div class="w-60 h-60 border-2 border-white/70 rounded-3xl relative flex flex-col items-center justify-center p-4">
-<!-- Reticle Corners -->
-<div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-emerald-400 rounded-tl-xl -mt-1 -ml-1"></div>
-<div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-emerald-400 rounded-tr-xl -mt-1 -mr-1"></div>
-<div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-emerald-400 rounded-bl-xl -mb-1 -ml-1"></div>
-<div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-emerald-400 rounded-br-xl -mb-1 -mr-1"></div>
-<!-- Target Label -->
-<div class="bg-black/70 backdrop-blur text-white text-[11px] font-bold px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5">
-<span>📷 MARCO #04 • FREIRA</span>
-</div>
-<!-- Pulsing Laser Line -->
-<div class="w-48 h-0.5 bg-emerald-400/90 shadow-[0_0_12px_#34d399] mt-6 animate-pulse"></div>
-<p class="text-[11px] text-white/90 text-center mt-6 font-medium drop-shadow">
-          Alinha o código QR do marco ou fotografa o horizonte sereno
-        </p>
-</div>
-<div class="mt-3 bg-black/60 backdrop-blur px-3 py-0.5 rounded-full text-[10px] text-slate-300 font-mono">
-        Nível de Horizonte Calmo: 0° Perfeito
-      </div>
-</div>
-<!-- Bottom Sheet Modal for Check-in Details -->
-<div class="relative z-10 bg-white rounded-t-[32px] p-4 shadow-2xl space-y-3">
-<div class="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-1"></div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2.5">
-<div class="w-9 h-9 rounded-xl bg-sky-100 text-primary flex items-center justify-center text-lg">
-            📍
-          </div>
-<div>
-<h3 class="font-extrabold text-sm text-slate-900">Farol da Ponta do Pargo</h3>
-<p class="text-[11px] text-slate-500">Costa Oeste • Madeira Calma</p>
-</div>
-</div>
-<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full">
-          🌿 Calmo
-        </span>
-</div>
-<!-- GPS Signal Check -->
-<div class="bg-slate-50 border border-slate-200/80 rounded-xl p-2 flex items-center justify-between text-xs">
-<span class="text-slate-600 flex items-center gap-1.5 font-medium">
-<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Sinal GPS Confirmado
-        </span>
-<span class="text-emerald-700 font-bold">38m do miradouro ✓</span>
-</div>
-<!-- Mascot Dialog -->
-<div class="bg-sky-50 border border-sky-100 rounded-xl p-2.5 flex items-start gap-2.5">
-<div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs shrink-0 font-bold cursor-pointer" onclick="SoundSystem.playBirdChirp()">
-          🕊️
-        </div>
-<p class="text-xs text-slate-700 leading-snug">
-<span class="font-bold text-primary">Freira diz:</span> Aponta para o marco de madeira para resgatar a pena sagrada!
-        </p>
-</div>
-<!-- Validation Trigger Buttons (Transition to REWARD SCREEN with Camera Beep + Shutter) -->
-<div class="grid grid-cols-2 gap-2.5 pt-1">
-<button class="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-3 rounded-2xl shadow-md active:scale-95 transition flex items-center justify-center gap-1.5 text-xs" onclick="SoundSystem.playScanBeep(); setTimeout(() =&gt; { SoundSystem.playFanfare(); goTo('screen-reward'); }, 260);">
-<span>📷 Validar QR</span>
-</button>
-<button class="bg-terracotta hover:bg-terracotta-dark text-white font-bold py-3 px-3 rounded-2xl shadow-md active:scale-95 transition flex items-center justify-center gap-1.5 text-xs" onclick="SoundSystem.playShutter(); setTimeout(() =&gt; { SoundSystem.playFanfare(); goTo('screen-reward'); }, 260);">
-<span>📸 Tirar Foto</span>
-</button>
-</div>
-<div class="text-center">
-<button class="text-[11px] text-slate-500 hover:text-slate-800 underline font-medium" onclick="SoundSystem.playFanfare(); goTo('screen-reward')">
-          Problemas com a câmara? Validar só por GPS
-        </button>
-</div>
-</div>
-</div>
-<!-- ======================================================== -->
-<!-- 5. ECRÃ DE RECOMPENSA - PENA RECOLHIDA (SCREEN_4)         -->
-<!-- ======================================================== -->
-<div class="screen-view p-4 space-y-4" id="screen-reward">
-<!-- Top Success Badge -->
-<div class="text-center pt-1">
-<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">
-        🌿 EXPEDIÇÃO TRANQUILA CONCLUÍDA
-      </span>
-<h2 class="text-2xl font-black text-slate-900 mt-2">Missão Cumprida!</h2>
-<p class="text-xs text-slate-600 px-4 mt-1">
-        Farol da Ponta do Pargo libertado das multidões e salvo pela tua rota serena.
-      </p>
-</div>
-<!-- Glowing Feather Artwork (Clickable for Fanfare Arpeggio) -->
-<div class="relative py-3 flex flex-col items-center justify-center cursor-pointer" onclick="SoundSystem.playFanfare()" title="Toca na Pena para ouvir a Fanfarra">
-<div class="w-36 h-36 rounded-full bg-gradient-to-b from-emerald-100 via-sky-50 to-white flex items-center justify-center shadow-inner relative animate-pulse-soft">
-<!-- Feather Graphic -->
-<svg class="w-24 h-24 drop-shadow-lg" viewbox="0 0 100 100">
-<path d="M 50 10 Q 75 35 68 70 Q 50 90 50 90 Q 50 90 32 70 Q 25 35 50 10 Z" fill="#6DA65D" stroke="#3d6832" stroke-width="2"></path>
-<line stroke="#ffffff" stroke-width="2" x1="50" x2="50" y1="10" y2="92"></line>
-<!-- Feather strands -->
-<line opacity="0.8" stroke="#ffffff" stroke-width="1.2" x1="50" x2="63" y1="30" y2="40"></line>
-<line opacity="0.8" stroke="#ffffff" stroke-width="1.2" x1="50" x2="37" y1="30" y2="40"></line>
-<line opacity="0.8" stroke="#ffffff" stroke-width="1.2" x1="50" x2="65" y1="50" y2="60"></line>
-<line opacity="0.8" stroke="#ffffff" stroke-width="1.2" x1="50" x2="35" y1="50" y2="60"></line>
-</svg>
-</div>
-<div class="mt-3 bg-white border border-slate-200 shadow-md px-4 py-1.5 rounded-full flex items-center gap-2 text-xs font-bold text-slate-800">
-<span>🪶 1 / 10 Penas</span>
-<span class="text-slate-300">•</span>
-<span class="text-emerald-700">10% Caderneta</span>
-<span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded ml-1">🔊 Tocar</span>
-</div>
-</div>
-<!-- Mascot Gratitude Speech -->
-<div class="bg-sky-50 border border-sky-100 rounded-2xl p-3.5 flex items-start gap-3 shadow-sm cursor-pointer" onclick="SoundSystem.playBirdChirp()">
-<div class="w-10 h-10 rounded-full bg-white border border-sky-200 flex items-center justify-center text-xl shrink-0">
-        🕊️
-      </div>
-<div>
-<div class="flex items-center gap-2">
-<h4 class="font-extrabold text-xs text-slate-900">Freira-da-Madeira</h4>
-<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 rounded">ALÍVIO</span>
-</div>
-<p class="text-xs text-slate-700 mt-1 leading-snug">
-          "Obrigada! A brisa da Ponta do Pargo é tão serena... Recuperei a pena da <strong>Asa Ocidental</strong>!"
-        </p>
-</div>
-</div>
-<!-- Rewards Earned Breakdown -->
-<div class="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-sm space-y-2.5">
-<div class="flex items-center justify-between text-xs font-extrabold text-slate-900 pb-1 border-b border-slate-100">
-<span>Ganhos da Expedição</span>
-<span class="text-emerald-600 font-bold">+140 PONTOS TOTAIS</span>
-</div>
-<div class="flex items-center justify-between text-xs">
-<span class="text-slate-600 flex items-center gap-2">
-<span class="text-emerald-600 font-bold">🪶</span> Pena da Asa Ocidental
-        </span>
-<span class="font-bold text-slate-800">+1</span>
-</div>
-<div class="flex items-center justify-between text-xs">
-<span class="text-slate-600 flex items-center gap-2">
-<span class="text-primary font-bold">⭐</span> Pontos de Tranquilidade
-        </span>
-<span class="font-bold text-primary">+140 (Bónus 2x)</span>
-</div>
-</div>
-<!-- Local Merchant Voucher Unlocked -->
-<div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3.5 shadow-sm space-y-2">
-<div class="flex items-center justify-between text-[11px] font-bold">
-<span class="text-amber-800 flex items-center gap-1">
-          🎁 NOVO VOUCHER DESBLOQUEADO
-        </span>
-<span class="bg-amber-200 text-amber-900 px-2 py-0.5 rounded text-[10px]">VÁLIDO 48H</span>
-</div>
-<div class="flex items-center justify-between">
-<div>
-<h5 class="font-bold text-xs text-slate-900">15% no Café "O Farol"</h5>
-<p class="text-[11px] text-slate-600">Válido em Bolo do Caco caseiro &amp; café bio.</p>
-</div>
-<button class="bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow active:scale-95 transition" onclick="SoundSystem.playClick(); alert('Código do Voucher: FAROL-FREIRA-15')">
-          Ver Código
-        </button>
-</div>
-</div>
-<!-- Flow Actions -->
-<div class="space-y-2 pt-2 pb-4">
-<button class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg active:scale-[0.98] transition flex items-center justify-center gap-2 text-sm" onclick="SoundSystem.playWhoosh(); goTo('screen-menu')">
-<span>Continuar a Explorar (Menu)</span> ➔
-      </button>
-<button class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition" onclick="SoundSystem.playPause(); goTo('screen-pause')">
-        Fazer Pausa no Trilho
-      </button>
-</div>
-</div>
-<!-- ======================================================== -->
-<!-- 6. ECRÃ DE PAUSA (SCREEN_12)                              -->
-<!-- ======================================================== -->
-<div class="screen-view p-4 space-y-4" id="screen-pause">
-<div class="text-center pt-2">
-<div class="w-12 h-12 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl mx-auto shadow-md">
-        ⏸️
-      </div>
-<h2 class="text-2xl font-black text-slate-900 mt-2">Jogo em Pausa</h2>
-<p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Missão de Campo Ativa</p>
-</div>
-<!-- Resting Mascot Artwork -->
-<div class="bg-gradient-to-b from-sky-50 to-white border border-sky-100 rounded-3xl p-5 text-center shadow-sm space-y-3">
-<div class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-        🍃 Modo Descanso
-      </div>
-<div class="w-24 h-24 mx-auto bg-emerald-50 rounded-full flex items-center justify-center text-4xl shadow-inner cursor-pointer" onclick="SoundSystem.playBirdChirp()">
-        😴
-      </div>
-<p class="text-xs text-slate-600 italic px-2">
-        "A Freira está a respirar fundo na sombra dos loureiros... Respira fundo também."
-      </p>
-</div>
-<!-- Current Location Stats -->
-<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="text-primary text-base">🧭</span>
-<span class="font-extrabold text-xs text-slate-900">Farol da Ponta do Pargo</span>
-</div>
-<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-md">2x Pontos</span>
-</div>
-<div class="grid grid-cols-2 gap-2 text-center">
-<div class="bg-sky-50 rounded-xl p-2.5">
-<div class="text-xs text-slate-500">Distância Restante</div>
-<div class="text-sm font-bold text-slate-800">350m</div>
-</div>
-<div class="bg-emerald-50 rounded-xl p-2.5">
-<div class="text-xs text-slate-500">Penas na Mochila</div>
-<div class="text-sm font-bold text-emerald-800">3 / 10</div>
-</div>
-</div>
-</div>
-<!-- Pause Menu Action Buttons -->
-<div class="space-y-2.5 pt-2 pb-4">
-<button class="w-full bg-secondary hover:bg-secondary-dark text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg active:scale-[0.98] transition flex items-center justify-center gap-2 text-sm" onclick="SoundSystem.playWhoosh(); goTo('screen-checkin')">
-        ▶ Retomar Missão
-      </button>
-<div class="grid grid-cols-2 gap-2">
-<button class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 transition" onclick="SoundSystem.playClick(); goTo('screen-instructions')">
-          📖 Instruções
-        </button>
-<button class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 transition" onclick="SoundSystem.playClick(); goTo('screen-options')">
-          ⚙️ Opções
-        </button>
-</div>
-<button class="w-full text-xs text-rose-600 hover:text-rose-700 font-bold py-2 flex items-center justify-center gap-1" onclick="SoundSystem.playClick(); goTo('screen-menu')">
-        ✕ Desistir e Voltar ao Menu Principal
-      </button>
-</div>
-</div>
-<!-- ======================================================== -->
-<!-- 7. ECRÃ DE OPÇÕES (SCREEN_14)                             -->
-<!-- ======================================================== -->
-<div class="screen-view p-4 space-y-4" id="screen-options">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2.5">
-<span class="w-8 h-8 rounded-xl bg-sky-100 text-primary flex items-center justify-center text-lg">
-          ⚙️
-        </span>
-<div>
-<h2 class="text-base font-extrabold text-slate-900 leading-tight">Opções de Jogo</h2>
-<p class="text-[11px] text-slate-500">Personaliza a tua expedição pelas serras</p>
-</div>
-</div>
-<button class="text-xs font-bold text-primary hover:underline" onclick="SoundSystem.playClick(); goTo('screen-menu')">
-        Fechar ✕
-      </button>
-</div>
-<!-- Audio Section with Direct Sync to Web Audio Engine -->
-<div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm space-y-3">
-<div class="flex items-center justify-between border-b border-slate-100 pb-2">
-<div class="flex items-center gap-2 text-xs font-bold text-slate-900">
-<span>🔊</span> Áudio e Paisagem Sonora Sintetizada
-        </div>
-<span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Web Audio API</span>
-</div>
-<div class="flex items-center justify-between">
-<div>
-<div class="text-xs font-bold text-slate-800">Música Ambiente</div>
-<div class="text-[11px] text-slate-500">Brisa atlântica &amp; chilrear da Laurissilva</div>
-</div>
-<input checked="" class="w-5 h-5 accent-primary cursor-pointer" id="opt-ambient-toggle" onchange="SoundSystem.toggleAmbient(this.checked)" type="checkbox"/>
-</div>
-<div class="flex items-center justify-between pt-1">
-<div>
-<div class="text-xs font-bold text-slate-800">Efeitos Sonoros (SFX)</div>
-<div class="text-[11px] text-slate-500">Pios da freira, cliques táteis &amp; câmara</div>
-</div>
-<input checked="" class="w-5 h-5 accent-secondary cursor-pointer" id="opt-sfx-toggle" onchange="SoundSystem.toggleSFX(this.checked)" type="checkbox"/>
-</div>
-<!-- Quick Audio Test Bar inside options -->
-<div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-<span class="text-slate-500 text-[11px]">Testar Amostras:</span>
-<div class="flex items-center gap-1.5">
-<button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[10px] font-bold text-slate-700" onclick="SoundSystem.playBirdChirp()">🕊️ Pássaro</button>
-<button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[10px] font-bold text-slate-700" onclick="SoundSystem.playFanfare()">✨ Fanfarra</button>
-<button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[10px] font-bold text-slate-700" onclick="SoundSystem.playShutter()">📸 Obturador</button>
-</div>
-</div>
-</div>
-<!-- Language Section -->
-<div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm space-y-2.5">
-<div class="flex items-center justify-between border-b border-slate-100 pb-2">
-<span class="text-xs font-bold text-slate-900 flex items-center gap-2">
-<span>🌐</span> Idioma da Expedição
-        </span>
-<span class="text-[10px] text-slate-400 font-bold">5 LÍNGUAS</span>
-</div>
-<div class="grid grid-cols-2 gap-2 text-xs font-bold">
-<button class="bg-primary text-white p-2.5 rounded-xl text-left flex items-center justify-between" onclick="SoundSystem.playChime()">
-<span>🇵🇹 Português</span> <span>✓</span>
-</button>
-<button class="bg-slate-100 text-slate-700 hover:bg-slate-200 p-2.5 rounded-xl text-left" onclick="SoundSystem.playChime()">
-          🇬🇧 English
-        </button>
-<button class="bg-slate-100 text-slate-700 hover:bg-slate-200 p-2.5 rounded-xl text-left" onclick="SoundSystem.playChime()">
-          🇫🇷 Français
-        </button>
-<button class="bg-slate-100 text-slate-700 hover:bg-slate-200 p-2.5 rounded-xl text-left" onclick="SoundSystem.playChime()">
-          🇩🇪 Deutsch
-        </button>
-</div>
-</div>
-<!-- Navigation & Radar Sensor -->
-<div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm space-y-3">
-<div class="flex items-center gap-2 text-xs font-bold text-slate-900 border-b border-slate-100 pb-2">
-<span>🧭</span> Exploração e Navegação
-      </div>
-<div class="flex items-center justify-between">
-<div>
-<div class="text-xs font-bold text-slate-800">Radar de Multidões</div>
-<div class="text-[11px] text-slate-500">Alerta sonoro se miradouros encherem</div>
-</div>
-<input checked="" class="w-5 h-5 accent-primary cursor-pointer" onchange="SoundSystem.playCompassHaptic()" type="checkbox"/>
-</div>
-</div>
-<!-- Embossed Compass Button: Guardar e Voltar -->
-<div class="pt-2 pb-6">
-<button class="w-full relative overflow-hidden bg-gradient-to-r from-[#003859] via-primary to-[#003859] text-white p-4 rounded-2xl shadow-xl border border-sky-400/30 flex items-center justify-between active:scale-[0.98] transition group" onclick="saveAndReturn()">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-900/60 border border-amber-400/60 flex items-center justify-center text-lg shadow-inner group-hover:rotate-45 transition duration-500">
-            🧭
-          </div>
-<div class="text-left">
-<div class="text-sm font-black tracking-wide">Guardar e Voltar ao Menu</div>
-<div class="text-[10px] text-emerald-300 font-semibold flex items-center gap-1">
-<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-              CONFIRMAR CONFIGURAÇÕES DE CAMPO
-            </div>
-</div>
-</div>
-<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white font-bold group-hover:translate-x-1 transition">
-          ➔
-        </div>
-</button>
-</div>
-</div>
-</div>
-<!-- ======================================================== -->
-<!-- FLOATING AUDIO CONTROL CENTER / INTERACTIVE HUD          -->
-<!-- ======================================================== -->
-<div class="fixed bottom-3 sm:bottom-6 z-50 transition-all duration-300 transform" id="audio-hud-container">
-<div class="bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 shadow-2xl rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-white w-[92vw] max-w-[420px] flex flex-col gap-2.5">
-<!-- HUD Header Row -->
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center justify-center text-sm shadow">
-          🎧
-        </div>
-<div>
-<div class="text-xs font-bold tracking-tight text-white flex items-center gap-2">
-            Áudio Espacial Madeira
-            <span class="bg-emerald-500/20 text-emerald-300 text-[9px] px-1.5 py-0.5 rounded font-mono border border-emerald-500/30" id="hud-status-chip">ONLINE</span>
-</div>
-<div class="text-[10px] text-slate-400">Web Audio API • Natureza &amp; Efeitos</div>
-</div>
-</div>
-<!-- Equalizer Visualizer & Master Mute Toggle -->
-<div class="flex items-center gap-2">
-<div class="flex items-end gap-1 h-5 px-2 py-1 rounded bg-black/40 border border-white/10 eq-active text-emerald-400" id="hud-eq-display">
-<span class="eq-bar eq-1 bg-emerald-400"></span>
-<span class="eq-bar eq-2 bg-emerald-400"></span>
-<span class="eq-bar eq-3 bg-emerald-400"></span>
-<span class="eq-bar eq-4 bg-emerald-400"></span>
-</div>
-<button class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 flex items-center justify-center text-xs transition border border-slate-700" id="hud-mute-btn" onclick="SoundSystem.toggleMasterMute()" title="Silenciar / Ativar Som">
-          🔊
-        </button>
-</div>
-</div>
-<!-- HUD Controls Grid -->
-<div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800">
-<!-- Ambient Island Nature Toggle -->
-<button class="flex items-center justify-between px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-750 active:scale-95 transition border border-slate-700 text-left" id="hud-ambient-btn" onclick="SoundSystem.toggleAmbient()">
-<div>
-<div class="text-[11px] font-bold text-white flex items-center gap-1">
-            🌊 Brisa &amp; Bosque
-          </div>
-<div class="text-[9px] text-emerald-400 font-semibold" id="hud-ambient-state">Ativo</div>
-</div>
-<span class="text-sm">🍃</span>
-</button>
-<!-- UI SFX Toggle -->
-<button class="flex items-center justify-between px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-750 active:scale-95 transition border border-slate-700 text-left" id="hud-sfx-btn" onclick="SoundSystem.toggleSFX()">
-<div>
-<div class="text-[11px] font-bold text-white flex items-center gap-1">
-            🪶 Efeitos (SFX)
-          </div>
-<div class="text-[9px] text-emerald-400 font-semibold" id="hud-sfx-state">Ativo</div>
-</div>
-<span class="text-sm">✨</span>
-</button>
-</div>
-<!-- Master Volume Slider -->
-<div class="flex items-center gap-2 pt-1">
-<span class="text-[10px] text-slate-400 font-medium">Vol:</span>
-<input class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-400" id="hud-volume-slider" max="1" min="0" oninput="SoundSystem.setVolume(this.value)" step="0.05" type="range" value="0.75"/>
-<span class="text-[10px] font-mono text-sky-300 w-8 text-right" id="hud-volume-pct">75%</span>
-</div>
-</div>
-</div>
+    <button onclick="go('caderneta')" id="badge-penas" class="shrink-0 px-2 py-1 rounded-full bg-primary-light text-primary font-bold text-sm" aria-label="Penas recolhidas">🪶 3/10</button>
+    <button onclick="toggleMute()" id="btn-sound" class="w-8 h-8 shrink-0 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center" aria-label="Som">🔊</button>
+    <button onclick="go('pausa')" class="w-8 h-8 shrink-0 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-sm font-bold text-slate-700" aria-label="Pausa">II</button>
+  </header>
+
+  <!-- Ecrã atual -->
+  <main id="vp" class="flex-1 overflow-y-auto"></main>
+
+  <!-- Menu inferior -->
+  <nav id="bottomnav" class="shrink-0 bg-white border-t border-slate-100 grid grid-cols-5 text-[12px] font-semibold text-slate-500" aria-label="Menu principal"></nav>
+
+  <!-- Aviso rápido -->
+  <div id="toast" role="status" class="pointer-events-none absolute left-4 right-4 bottom-20 bg-slate-900 text-white text-sm font-medium rounded-2xl px-4 py-3 shadow-xl opacity-0 translate-y-3 transition duration-300"></div>
+
+  <!-- Janela (QR do prémio) -->
+  <div id="modal" class="hidden absolute inset-0 bg-slate-900/60 flex items-end sm:items-center justify-center p-4 z-50" onclick="closeModal(event)">
+    <div id="modal-body" class="bg-white rounded-3xl w-full max-w-sm p-5 fade-in"></div>
+  </div>
+</div>
+
+<p class="hidden sm:block text-slate-400 text-xs mt-3">Projeto académico · SGM · Universidade da Madeira · 2026/27 · Desafio 8 Startup Madeira (OpenInnoMAC)</p>
+
 <script>
-  // ==============================================================
-  // WEB AUDIO API SYNTHESIZER & SOUND SYSTEM (Zero External MP3s)
-  // ==============================================================
-  const SoundSystem = (function() {
+  // Elemento seguro: se não existir, devolve um objeto vazio (o motor de som original procurava elementos de um painel antigo)
+  function el(id) {
+    return document.getElementById(id) || { classList: { add(){}, remove(){}, replace(){} }, style: {} };
+  }
+const SoundSystem = (function() {
     let ctx = null;
     let masterGain = null;
     let ambientGain = null;
@@ -1250,7 +434,7 @@
       if (masterGain) {
         masterGain.gain.setValueAtTime(isMuted ? 0 : volumeLevel, ctx.currentTime);
       }
-      document.getElementById('hud-volume-pct').textContent = Math.round(volumeLevel * 100) + '%';
+      el('hud-volume-pct').textContent = Math.round(volumeLevel * 100) + '%';
     }
 
     function toggleMasterMute() {
@@ -1260,10 +444,10 @@
         masterGain.gain.setValueAtTime(isMuted ? 0 : volumeLevel, ctx.currentTime);
       }
 
-      const muteBtn = document.getElementById('hud-mute-btn');
-      const eqDisplay = document.getElementById('hud-eq-display');
-      const headerBadge = document.getElementById('header-audio-badge');
-      const headerLabel = document.getElementById('header-audio-label');
+      const muteBtn = el('hud-mute-btn');
+      const eqDisplay = el('hud-eq-display');
+      const headerBadge = el('header-audio-badge');
+      const headerLabel = el('header-audio-label');
 
       if (isMuted) {
         muteBtn.textContent = '🔇';
@@ -1284,8 +468,8 @@
     function toggleAmbient(forceVal) {
       initContext();
       isAmbientOn = (forceVal !== undefined) ? forceVal : !isAmbientOn;
-      const stateLabel = document.getElementById('hud-ambient-state');
-      const optCheck = document.getElementById('opt-ambient-toggle');
+      const stateLabel = el('hud-ambient-state');
+      const optCheck = el('opt-ambient-toggle');
 
       if (isAmbientOn) {
         if (ambientGain) ambientGain.gain.setValueAtTime(0.35, ctx.currentTime);
@@ -1306,8 +490,8 @@
     function toggleSFX(forceVal) {
       initContext();
       isSfxOn = (forceVal !== undefined) ? forceVal : !isSfxOn;
-      const stateLabel = document.getElementById('hud-sfx-state');
-      const optCheck = document.getElementById('opt-sfx-toggle');
+      const stateLabel = el('hud-sfx-state');
+      const optCheck = el('opt-sfx-toggle');
 
       if (isSfxOn) {
         if (sfxGain) sfxGain.gain.setValueAtTime(0.7, ctx.currentTime);
@@ -1340,173 +524,828 @@
       toggleSFX
     };
   })();
-
-  // Autostart audio context on first user touch / click anywhere
-  window.addEventListener('click', function unlockAudio() {
-    SoundSystem.init();
-    window.removeEventListener('click', unlockAudio);
-  }, { once: true });
-
-  // Floating HUD visibility toggle
-  function toggleAudioHud() {
-    SoundSystem.playClick();
-    const hud = document.getElementById('audio-hud-container');
-    if (hud.classList.contains('translate-y-24')) {
-      hud.classList.remove('translate-y-24', 'opacity-40');
-    } else {
-      hud.classList.add('translate-y-24', 'opacity-40');
-    }
-  }
-
-  // State management and view router
-  const views = [
-    'screen-splash',
-    'screen-menu',
-    'screen-instructions',
-    'screen-checkin',
-    'screen-reward',
-    'screen-pause',
-    'screen-options'
-  ];
-
-  function goTo(screenId) {
-    views.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        if (id === screenId) {
-          el.classList.add('active');
-        } else {
-          el.classList.remove('active');
-        }
-      }
-    });
-
-    // Update prototype floating nav active states
-    const navMap = {
-      'screen-splash': 'nav-btn-splash',
-      'screen-menu': 'nav-btn-menu',
-      'screen-instructions': 'nav-btn-instructions',
-      'screen-checkin': 'nav-btn-checkin',
-      'screen-reward': 'nav-btn-reward',
-      'screen-pause': 'nav-btn-pause',
-      'screen-options': 'nav-btn-options'
-    };
-
-    document.querySelectorAll('.proto-nav').forEach(btn => {
-      btn.classList.remove('bg-primary', 'text-white');
-      btn.classList.add('bg-slate-800', 'text-slate-300');
-    });
-
-    const activeNavBtn = document.getElementById(navMap[screenId]);
-    if (activeNavBtn) {
-      activeNavBtn.classList.remove('bg-slate-800', 'text-slate-300');
-      activeNavBtn.classList.add('bg-primary', 'text-white');
-    }
-
-    // Scroll device container to top on screen change
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    const devContainer = document.querySelector('.overflow-y-auto');
-    if (devContainer) devContainer.scrollTop = 0;
-  }
-
-  // Dynamic multilingual content for Screen Instructions
-  const translations = {
-    pt: {
-      header: "Caderno de Campo",
-      stepsBadge: "5 Passos Rápidos",
-      langLabel: "Idioma:",
-      badge: "MANUAL OFICIAL",
-      title: "Como Jogar a Missão Freira",
-      desc: "Protege o mar de nuvens, alivia os picos mais cheios e ajuda a nossa ave rara a recuperar as suas penas sagradas.",
-      s1Title: "Descobre no Mapa",
-      s1Desc: "Os pontos cinzentos estão sobrelotados (evita-os!). Escolhe os pontos verdes calmos recomendados com carinho pela Freira.",
-      s2Title: "Explora e Caminha",
-      s2Desc: "Dirige-te à rota tranquila. Ganhas o dobro dos pontos (x2) se visitares fora das horas de ponta da ilha!",
-      s3Title: "Faz Check-in no Marco",
-      s3Desc: "Ao chegares, confirma a visita apontando a câmara para o QR Code de madeira no marco do trilho ou através do GPS.",
-      s4Title: "Devolve Penas à Freira",
-      s4Desc: "Cada lugar calmo devolve uma pena mágica ao peito da ave. Recolhe as 10 para restaurar a plumagem e salvar o ninho!",
-      s5Title: "Desfruta de Prémios Reais",
-      s5Desc: "Usa os teus pontos em dezenas de parceiros da ilha: bolo do caco quentinho, mel-de-cana e artesanato de vime.",
-      cta: "Entendido, Fazer Check-in!"
-    },
-    en: {
-      header: "Field Notebook",
-      stepsBadge: "5 Quick Steps",
-      langLabel: "Language:",
-      badge: "OFFICIAL GUIDE",
-      title: "How to Play Freira Mission",
-      desc: "Protect the sea of clouds, relieve crowded peaks, and help our rare seabird recover its sacred feathers.",
-      s1Title: "Discover on the Map",
-      s1Desc: "Grey spots are overcrowded (avoid them!). Pick calm green spots recommended with care by Freira.",
-      s2Title: "Explore & Hike Calmly",
-      s2Desc: "Head towards peaceful trails. Earn double points (2x) when visiting outside peak hours!",
-      s3Title: "Trail Marker Check-in",
-      s3Desc: "Upon arrival, validate your visit by scanning the wooden QR code on the post or via GPS auto-radius.",
-      s4Title: "Restore Feathers to Freira",
-      s4Desc: "Each serene sanctuary returns a magic feather. Collect all 10 to restore plumage and protect nests!",
-      s5Title: "Enjoy Real Local Rewards",
-      s5Desc: "Redeem your points across island partners: warm bolo do caco bread, organic sugar cane syrup, and wicker crafts.",
-      cta: "Understood, Start Check-in!"
-    },
-    fr: {
-      header: "Carnet de Terrain",
-      stepsBadge: "5 Étapes Rapides",
-      langLabel: "Langue :",
-      badge: "MANUEL OFFICIEL",
-      title: "Comment Jouer à Mission Freira",
-      desc: "Protégez la mer de nuages, désengorgez les sommets et aidez notre pétrel rare à restaurer son plumage sacré.",
-      s1Title: "Découvrez sur la Carte",
-      s1Desc: "Les points gris sont bondés (évitez-les !). Choisissez les points verts sereins recommandés par la Freira.",
-      s2Title: "Explorez en Sérénité",
-      s2Desc: "Rejoignez l'itinéraire calme. Gagnez deux fois plus de points (x2) en dehors des heures d'affluence !",
-      s3Title: "Validation au Borne Sentier",
-      s3Desc: "À l'arrivée, confirmez la visite en visant le QR code en bois ou par géolocalisation GPS.",
-      s4Title: "Restaurez les Plumes",
-      s4Desc: "Chaque lieu paisible rend une plume magique. Rassemblez les 10 pour sauver son nid d'altitude !",
-      s5Title: "Savourez de Vrais Prix Locaux",
-      s5Desc: "Échangez vos points chez nos artisans partenaires : pain bolo do caco chaud, miel de canne et vannerie.",
-      cta: "Compris, Valider le Check-in !"
-    }
-  };
-
-  function setTutorialLanguage(lang) {
-    SoundSystem.playChime();
-    const data = translations[lang] || translations.pt;
-    document.getElementById('tut-header-label').textContent = data.header;
-    document.getElementById('tut-steps-badge').textContent = data.stepsBadge;
-    document.getElementById('tut-lang-label').textContent = data.langLabel;
-    document.getElementById('tut-badge-official').textContent = data.badge;
-    document.getElementById('tut-title').textContent = data.title;
-    document.getElementById('tut-desc').textContent = data.desc;
-    document.getElementById('step1-title').textContent = data.s1Title;
-    document.getElementById('step1-desc').textContent = data.s1Desc;
-    document.getElementById('step2-title').textContent = data.s2Title;
-    document.getElementById('step2-desc').textContent = data.s2Desc;
-    document.getElementById('step3-title').textContent = data.s3Title;
-    document.getElementById('step3-desc').textContent = data.s3Desc;
-    document.getElementById('step4-title').textContent = data.s4Title;
-    document.getElementById('step4-desc').textContent = data.s4Desc;
-    document.getElementById('step5-title').textContent = data.s5Title;
-    document.getElementById('step5-desc').textContent = data.s5Desc;
-    document.getElementById('tut-cta-btn').innerHTML = `<span>${data.cta}</span> ➔`;
-
-    // Update button highlights
-    ['pt', 'en', 'fr'].forEach(code => {
-      const btn = document.getElementById(`tlang-${code}`);
-      if (code === lang) {
-        btn.className = "tlang-btn bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-xl transition";
-      } else {
-        btn.className = "tlang-btn bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold px-2.5 py-1 rounded-xl transition";
-      }
-    });
-  }
-
-  function saveAndReturn() {
-    SoundSystem.playCompassHaptic();
-    setTimeout(() => {
-      goTo('screen-menu');
-    }, 180);
-  }
 </script>
-</body></html>
+<script>
+// ==============================================================
+// MISSÃO FREIRA — protótipo funcional
+// Dados de exemplo: moradas, horários, parceiros e números são fictícios.
+// ==============================================================
+
+const CATS = {
+  natureza:   { label: 'Natureza',        icon: '🌿' },
+  artesanato: { label: 'Artesanato',      icon: '🧺' },
+  produtos:   { label: 'Produtos Locais', icon: '🍯' },
+  familias:   { label: 'Famílias',        icon: '👨‍👩‍👧' }
+};
+
+// Locais do MVP que aparecem no mapa (posição em % do mapa)
+const PLACES = {
+  camacha: {
+    short: 'Camacha (vime)', de: 'da Camacha',
+    nome: 'Oficina de Vime', local: 'Camacha', cats: ['artesanato', 'familias'],
+    calmo: true, kids: true, idade: '4+', dist: '1,2 km · Fácil', tempo: '~45 min',
+    emoji: '🧺', grad: 'from-amber-600 via-amber-800 to-stone-900',
+    desc: 'Vê como se fazem cestos de vime à mão. Ideal para crianças.',
+    estado: 'Muito calmo · Sem filas', gps: '12 m da oficina', carimbo: 'vime',
+    parceiro: { nome: 'Oficina de Vime (exemplo)', oferta: '10% em cestos e brinquedos de vime' },
+    pin: { x: 78, y: 64, label: 'Camacha' }
+  },
+  farol: {
+    short: 'Ponta do Pargo', de: 'do Farol',
+    nome: 'Farol da Ponta do Pargo', local: 'Ponta do Pargo · Calheta', cats: ['natureza'],
+    calmo: true, kids: false, idade: '6+', dist: 'a 18 km · Costa Oeste', tempo: '~35 min a pé',
+    emoji: '🗼', grad: 'from-orange-300 via-rose-500 to-sky-900',
+    desc: 'Falésias do oeste sem autocarros de turistas. Ganha a pena do Vento Atlântico.',
+    aviso: 'Falésia — mantém as crianças perto', estado: 'Calmo', gps: '38 m do miradouro',
+    parceiro: { nome: 'Café «O Farol» (exemplo)', oferta: '15% em café e bolo do caco' },
+    pin: { x: 7, y: 57, label: 'Farol' }
+  },
+  achadas: {
+    short: 'Achadas da Cruz', de: 'das Achadas',
+    nome: 'Achadas da Cruz', local: 'Porto Moniz', cats: ['natureza'],
+    calmo: true, kids: false, idade: '10+', dist: 'a 24 km · Noroeste', tempo: 'teleférico + 30 min',
+    emoji: '🚡', grad: 'from-sky-300 via-teal-600 to-slate-800',
+    desc: 'Desce de teleférico até à fajã junto ao mar. Quase ninguém.',
+    aviso: 'Teleférico muito inclinado', estado: 'Muito calmo', gps: '20 m do teleférico',
+    pin: { x: 12, y: 38, label: 'Achadas da Cruz' }
+  },
+  faja: {
+    short: 'Fajã dos Padres', de: 'da Fajã',
+    nome: 'Fajã dos Padres', local: 'Câmara de Lobos', cats: ['natureza', 'produtos'],
+    calmo: true, kids: true, idade: '4+', dist: 'a 12 km · Costa Sul', tempo: 'teleférico · ~20 min',
+    emoji: '🥭', grad: 'from-lime-300 via-emerald-600 to-sky-800',
+    desc: 'Desce de teleférico até à fajã: mangas, vinho e mar calmo.',
+    estado: 'Calmo', gps: '15 m do cais',
+    parceiro: { nome: 'Bar da Fajã (exemplo)', oferta: 'Prova de fruta tropical' },
+    pin: { x: 45, y: 72, label: 'Fajã dos Padres' }
+  },
+  colmo: {
+    short: 'Santana (colmo)', de: 'de Santana',
+    nome: 'Casas de Colmo', local: 'Santana', cats: ['artesanato', 'familias'],
+    calmo: true, kids: true, idade: '3+', dist: 'a 24 km · Costa Norte', tempo: '~40 min',
+    emoji: '🏠', grad: 'from-red-300 via-red-600 to-emerald-900',
+    desc: 'Casinhas com telhado de palha, símbolo da Madeira. Conta as janelas!',
+    estado: 'Calmo', gps: '10 m do núcleo', carimbo: 'colmo',
+    pin: { x: 64, y: 24, label: 'Santana' }
+  },
+  engenho: {
+    short: 'Porto da Cruz', de: 'do Engenho',
+    nome: 'Engenho de Cana', local: 'Porto da Cruz', cats: ['produtos', 'familias'],
+    calmo: false, kids: true, idade: '4+', dist: 'a 18 km · Costa Norte', tempo: '~50 min',
+    emoji: '🍯', grad: 'from-yellow-300 via-amber-600 to-stone-800',
+    desc: 'Descobre como a cana-de-açúcar se transforma em mel de cana.',
+    estado: 'Afluência moderada', gps: '25 m da entrada', carimbo: 'engenho',
+    pin: { x: 91, y: 36, label: 'P. da Cruz' }
+  }
+};
+
+const CROWDED = { nome: 'Pico do Arieiro', info: '94% cheio · 45 min de espera', pin: { x: 50, y: 50, label: 'Arieiro 94%' } };
+
+const STAMPS = {
+  vime:    { nome: 'Mestre do Vime',    sitio: 'Camacha',           icon: '🧺' },
+  colmo:   { nome: 'Guardião do Colmo', sitio: 'Santana',           icon: '🏠' },
+  engenho: { nome: 'Amigo do Engenho',  sitio: 'Porto da Cruz',     icon: '🍯' },
+  festa:   { nome: 'Festa da Época',    sitio: 'Curral das Freiras', icon: '🌰' }
+};
+
+const TASKS = [
+  { icon: '🧺', t: 'Encontra 3 objetos diferentes feitos de vime.', ex: 'ex.: cesto, berço, chapéu' },
+  { icon: '🔢', t: 'Conta quantas cores de vime vês na oficina.', ex: 'ex.: vime branco e vime castanho' },
+  { icon: '❓', t: 'Pergunta ao artesão quanto tempo demora a fazer um cesto.', ex: 'Conversa com quem trabalha na bancada' },
+  { icon: '✏️', t: 'Desenha o teu cesto preferido.', ex: 'No papel ou na Caderneta' }
+];
+
+const START = () => ({
+  visited: [
+    { id: 'boca',     nome: 'Boca da Corrida' },
+    { id: 'jardim',   nome: 'Jardim da Serra' },
+    { id: 'saojorge', nome: 'São Jorge' }
+  ],
+  pontos: 120, carimbos: [], emblema: false, tasks: [false, false, false, false],
+  redeemed: [], mission: 'camacha', lastReward: null, onboarded: false,
+  cats: [], calmo: false, kids: false, familyMode: false, radar: true,
+  cadTab: 'penas', music: true, sfx: true, muted: false, volume: 0.75
+});
+
+let state = START();
+try { const saved = JSON.parse(localStorage.getItem('missaoFreira.v2')); if (saved) state = Object.assign(START(), saved); } catch (e) {}
+function save() { try { localStorage.setItem('missaoFreira.v2', JSON.stringify(state)); } catch (e) {} }
+
+const penas = () => state.visited.length;
+const isVisited = id => state.visited.some(v => v.id === id);
+const sfx = name => { try { SoundSystem[name](); } catch (e) {} };
+
+// ---------------- Router ----------------
+const META = {
+  abertura:    { title: 'Missão Freira', bar: false, nav: false, code: 'A1' },
+  onboarding:  { title: 'A história', bar: false, nav: false, code: 'A2' },
+  menu:        { title: 'Menu', nav: false, code: 'A3' },
+  mapa:        { title: 'Explorar a Madeira', nav: 'mapa', root: true, code: 'A4/B1' },
+  local:       { title: 'Local', code: 'B2' },
+  oficio:      { title: 'Artesanato', code: 'B3' },
+  familia:     { title: 'Família', code: 'B4' },
+  desafio:     { title: 'Desafio', code: 'B5' },
+  missao:      { title: 'Missão', code: 'Missão' },
+  checkin:     { title: 'Check-in', code: 'A9', dark: true },
+  recompensa:  { title: 'Missão cumprida', code: 'A10' },
+  caderneta:   { title: 'Caderneta de Campo', nav: 'caderneta', root: true, code: 'A6' },
+  epoca:       { title: 'Missões da Época', nav: 'missoes', root: true, code: 'B7' },
+  pausa:       { title: 'Pausa', code: 'Pausa', dark: true },
+  opcoes:      { title: 'Opções', nav: 'perfil', root: true, code: 'Opções' },
+  instrucoes:  { title: 'Como jogar', code: 'Instruções' }
+};
+
+let current = 'abertura';
+let stack = [];
+
+function go(id, opts = {}) {
+  sfx(opts.sound || 'playClick');
+  if (META[id].root) stack = [];
+  else if (current !== id) stack.push(current);
+  current = id;
+  render();
+}
+function back() {
+  sfx('playWhoosh');
+  current = stack.pop() || 'mapa';
+  render();
+}
+function jump(id) { stack = id === 'abertura' ? [] : ['mapa']; current = id; sfx('playClick'); render(); }
+
+function render(keepScroll) {
+  const vp = document.getElementById('vp');
+  const y = vp.scrollTop;
+  const m = META[current];
+  vp.innerHTML = `<div class="fade-in">${SCREENS[current]()}</div>`;
+  vp.scrollTop = keepScroll ? y : 0;
+  document.getElementById('appbar').style.display = m.bar === false ? 'none' : '';
+  document.getElementById('appbar-title').textContent = m.title;
+  document.getElementById('btn-back').style.display = stack.length ? '' : 'none';
+  vp.style.background = m.dark ? '#24343D' : '';
+  document.getElementById('badge-penas').textContent = `🪶 ${penas()}/10`;
+  document.getElementById('btn-sound').textContent = state.muted ? '🔇' : '🔊';
+  renderNav(m.nav);
+  renderStrip();
+  save();
+}
+
+function renderNav(active) {
+  const nav = document.getElementById('bottomnav');
+  if (!active) { nav.style.display = 'none'; return; }
+  nav.style.display = '';
+  const items = [
+    ['mapa', '🧭', 'Mapa', "go('mapa')"],
+    ['missoes', '✅', 'Missões', "go('epoca')"],
+    ['penas', '🪶', 'Penas', "openCaderneta('penas')"],
+    ['caderneta', '📖', 'Caderneta', "openCaderneta('premios')"],
+    ['perfil', '👤', 'Perfil', "go('opcoes')"]
+  ];
+  nav.innerHTML = items.map(([k, i, l, fn]) => {
+    const sel = k === 'penas' ? (active === 'caderneta' && state.cadTab === 'penas')
+              : k === 'caderneta' ? (active === 'caderneta' && state.cadTab !== 'penas')
+              : k === active;
+    return `<button onclick="${fn}" class="py-2 flex flex-col items-center gap-0.5 ${sel ? 'text-primary' : ''}" ${sel ? 'aria-current="page"' : ''}>
+      <span class="text-lg leading-none">${i}</span><span>${l}</span></button>`;
+  }).join('');
+}
+
+function renderStrip() {
+  const strip = document.getElementById('proto-strip');
+  strip.innerHTML = `<span class="text-amber-400 font-bold px-2 py-1.5 shrink-0">Ecrãs:</span>` +
+    Object.entries(META).map(([id, m]) =>
+      `<button onclick="jump('${id}')" class="shrink-0 px-2.5 py-1.5 rounded-full font-semibold ${id === current ? 'bg-primary text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">${m.code} · ${m.title}</button>`
+    ).join('') +
+    `<button onclick="resetProgress(true)" class="shrink-0 px-2.5 py-1.5 rounded-full font-semibold bg-terracotta-dark text-white">↺ Reiniciar demo</button>`;
+}
+
+// ---------------- Ajudantes ----------------
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('opacity-0', 'translate-y-3');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add('opacity-0', 'translate-y-3'), 2600);
+}
+function openModal(html) { document.getElementById('modal-body').innerHTML = html; document.getElementById('modal').classList.remove('hidden'); }
+function closeModal(e) { if (!e || e.target.id === 'modal' || e.target.dataset.close) document.getElementById('modal').classList.add('hidden'); }
+
+const card = (inner, cls = '') => `<section class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 ${cls}">${inner}</section>`;
+const chip = (t, cls = 'bg-slate-100 text-slate-700') => `<span class="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 rounded-full ${cls}">${t}</span>`;
+const btn = (label, fn, cls = 'bg-primary hover:bg-primary-dark text-white') =>
+  `<button onclick="${fn}" class="w-full py-3.5 px-4 rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-[.98] transition ${cls}">${label}</button>`;
+const btn2 = (label, fn) => btn(label, fn, 'bg-primary-light hover:bg-sky-100 text-primary');
+const progressBar = (n, total = 10, cls = 'bg-primary') =>
+  `<div class="h-2.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full ${cls} rounded-full transition-all" style="width:${n / total * 100}%"></div></div>`;
+const segments = n => `<div class="flex gap-1">${Array.from({ length: 10 }, (_, i) =>
+  `<div class="flex-1 h-2 rounded-full ${i < n ? 'bg-terracotta' : 'bg-slate-200'}"></div>`).join('')}</div>`;
+
+function bird(cls = 'w-28 h-24') {
+  return `<svg viewBox="0 0 160 120" class="${cls}" role="img" aria-label="Freira-da-Madeira, a mascote">
+    <path d="M22 66 L4 56 L10 78 Z" fill="#3A4750"/>
+    <ellipse cx="72" cy="70" rx="52" ry="28" fill="#FAFBFC" stroke="#26323A" stroke-width="3"/>
+    <path d="M26 64 Q70 32 114 58 Q74 80 26 64 Z" fill="#3A4750"/>
+    <circle cx="116" cy="54" r="22" fill="#FAFBFC" stroke="#26323A" stroke-width="3"/>
+    <path d="M95 50 Q112 26 137 46 Q118 41 95 54 Z" fill="#3A4750"/>
+    <circle cx="122" cy="55" r="5" fill="#111827"/><circle cx="123.6" cy="53.4" r="1.6" fill="#fff"/>
+    <path d="M136 56 L153 61 L137 65 Z" fill="#26323A"/>
+    <line x1="62" y1="96" x2="60" y2="111" stroke="#7D8890" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="84" y1="96" x2="86" y2="111" stroke="#7D8890" stroke-width="3.5" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function freiraSays(text, label = 'A Freira diz:') {
+  return `<div class="flex gap-3 items-start bg-primary-light rounded-3xl p-4">
+    <div class="shrink-0 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm">${bird('w-12 h-10')}</div>
+    <div><div class="font-bold text-primary-dark">${label}</div><p class="text-[15px] text-slate-700 italic leading-snug mt-0.5">«${text}»</p></div>
+  </div>`;
+}
+
+const ord = n => `${n}.ª`;
+
+// ---------------- Ações ----------------
+function openPlace(id) {
+  state.mission = id;
+  if (id === 'camacha') go('local'); else go('missao');
+}
+function startCheckin(id) { state.mission = id || state.mission; go('checkin'); }
+
+function toggleCat(c) {
+  const i = state.cats.indexOf(c);
+  i >= 0 ? state.cats.splice(i, 1) : state.cats.push(c);
+  sfx('playClick'); render(true);
+}
+function toggleFilter(f) { state[f] = !state[f]; sfx('playClick'); render(true); }
+function matches(p) {
+  return (!state.cats.length || p.cats.some(c => state.cats.includes(c))) &&
+         (!state.calmo || p.calmo) && (!state.kids || p.kids);
+}
+function presetFilter(cats, kids = false) { state.cats = cats; state.kids = kids; state.calmo = false; go('mapa'); }
+
+function toggleTask(i) { state.tasks[i] = !state.tasks[i]; sfx(state.tasks[i] ? 'playChime' : 'playClick'); render(true); }
+
+let scanning = false;
+function validate(method) {
+  if (scanning) return;
+  scanning = true;
+  if (method === 'qr') sfx('playScanBeep'); else sfx('playCompassHaptic');
+  render(true);
+  setTimeout(() => { scanning = false; doValidate(method); }, method === 'qr' ? 1600 : 900);
+}
+function doValidate(method) {
+  const id = state.mission, p = PLACES[id];
+  const nova = !isVisited(id);
+  const r = { id, nova, method, pontos: 0, base: p.calmo ? 20 : 20, mult: p.calmo ? 2 : 1, carimbo: null, emblema: false, n: penas() };
+  if (nova) {
+    state.visited.push({ id, nome: p.short });
+    r.pontos = r.base * r.mult;
+    state.pontos += r.pontos;
+    if (p.carimbo && !state.carimbos.includes(p.carimbo)) { state.carimbos.push(p.carimbo); r.carimbo = p.carimbo; }
+    if (id === 'camacha' && state.tasks.every(Boolean) && !state.emblema) { state.emblema = true; r.emblema = true; }
+    r.n = penas();
+  }
+  state.lastReward = r;
+  sfx(nova ? 'playFanfare' : 'playChime');
+  current = 'recompensa'; render();
+}
+
+function openCaderneta(tab) { state.cadTab = tab; go('caderneta'); }
+function setTab(tab) { state.cadTab = tab; sfx('playClick'); render(true); }
+
+function redeem(id, cost) {
+  if (state.redeemed.includes(id)) return;
+  if (cost && state.pontos < cost) { toast(`Precisas de ${cost} pontos.`); return; }
+  if (cost) state.pontos -= cost;
+  state.redeemed.push(id);
+  sfx('playChime');
+  render(true);
+  showVoucher(id);
+}
+function showVoucher(id) {
+  const names = { cafe: 'Café «O Farol» (exemplo)', adega: 'Adega Tradicional (exemplo)', vime: 'Oficina de Vime (exemplo)' };
+  const cells = Array.from({ length: 81 }, (_, i) => ((i * 7 + (i % 9) * 3 + (i >> 2)) % 3 === 0) ? 1 : 0);
+  [0, 1, 2, 9, 10, 11, 18, 19, 20, 6, 7, 8, 15, 16, 17, 24, 25, 26, 54, 55, 56, 63, 64, 65, 72, 73, 74].forEach(i => cells[i] = 1);
+  openModal(`<div class="text-center space-y-3">
+    <div class="text-sm font-bold text-secondary-dark uppercase">Vale ativo</div>
+    <h3 class="text-xl font-bold">${names[id]}</h3>
+    <div class="mx-auto w-44 h-44 grid grid-cols-9 gap-0.5 p-2 bg-white border-2 border-slate-900 rounded-xl" aria-label="Código QR de exemplo">
+      ${cells.map(c => `<div class="${c ? 'bg-slate-900' : 'bg-white'} rounded-[1px]"></div>`).join('')}
+    </div>
+    <p class="text-sm text-slate-600">Mostra este código ao funcionário. <span class="font-semibold">Código de exemplo.</span></p>
+    <button data-close="1" onclick="closeModal(event)" class="w-full py-3 rounded-2xl bg-primary text-white font-bold">Fechar</button>
+  </div>`);
+}
+
+function toggleMute() {
+  try { SoundSystem.toggleMasterMute(); } catch (e) {}
+  state.muted = !state.muted; render(true);
+}
+function setMusic() { state.music = !state.music; try { SoundSystem.toggleAmbient(state.music); } catch (e) {} render(true); }
+function setSfx() { state.sfx = !state.sfx; try { SoundSystem.toggleSFX(state.sfx); } catch (e) {} render(true); }
+function setVol(v) { state.volume = parseFloat(v); try { SoundSystem.setVolume(v); } catch (e) {} document.getElementById('vol-pct').textContent = Math.round(v * 100) + '%'; save(); }
+function setFamily() { state.familyMode = !state.familyMode; if (state.familyMode) { state.kids = true; if (!state.cats.includes('familias')) state.cats.push('familias'); } sfx('playClick'); render(true); }
+
+let resetArmed = false;
+function resetProgress(force) {
+  if (!force && !resetArmed) { resetArmed = true; toast('Toca outra vez para apagar o progresso.'); render(true); return; }
+  resetArmed = false;
+  state = START(); stack = []; current = 'abertura';
+  toast('Progresso reposto.'); render();
+}
+
+// ---------------- Ecrãs ----------------
+const SCREENS = {
+
+abertura: () => `
+  <div class="p-4 space-y-4">
+    <div class="relative rounded-[28px] overflow-hidden bg-gradient-to-b from-[#3B2A26] via-[#7A3B2C] to-[#1E3A4C] text-white p-5 min-h-[270px] flex flex-col items-center justify-between">
+      <div class="w-full flex justify-between text-[12px] font-semibold">
+        ${chip('🌿 Lugares calmos', 'bg-white/15 text-white')}${chip('📶 Funciona sem rede', 'bg-white/15 text-white')}
+      </div>
+      <svg viewBox="0 0 400 120" class="absolute bottom-0 left-0 w-full" aria-hidden="true"><path d="M0 120 L0 70 L70 30 L130 75 L200 15 L270 70 L330 40 L400 80 L400 120 Z" fill="#2B3A44"/><path d="M0 120 L0 95 L90 80 L180 100 L260 85 L400 100 L400 120 Z" fill="#E8ECEB" opacity=".85"/></svg>
+      <button onclick="sfx('playBirdChirp'); toast('A Freira-da-Madeira só faz ninho nesta ilha!')" class="relative float" aria-label="Tocar na Freira">${bird('w-36 h-28')}</button>
+      <div class="relative bg-white text-slate-800 text-sm font-bold px-4 py-1.5 rounded-full shadow">«Olá! Vem descobrir a Madeira calma comigo?»</div>
+    </div>
+    <div class="text-center space-y-1.5">
+      <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Missão Freira</h2>
+      <p class="font-bold text-secondary-dark">Em Busca dos Recantos de Paz da Madeira</p>
+      <p class="text-[15px] text-slate-600 leading-snug px-2">Descobre os recantos calmos, os ofícios e os sabores da Madeira.</p>
+    </div>
+    <div class="grid grid-cols-4 gap-2 text-center">
+      ${Object.entries(CATS).map(([k, c]) => `<button onclick="presetFilter(['${k}'])" class="bg-white border border-slate-100 rounded-2xl py-3 px-1 shadow-sm active:scale-95 transition"><div class="text-2xl">${c.icon}</div><div class="text-[12px] font-bold mt-1 leading-tight">${c.label}</div></button>`).join('')}
+    </div>
+    <button onclick="go('epoca')" class="w-full text-left bg-terracotta-light border border-orange-200 rounded-2xl p-3 flex items-center gap-3">
+      <span class="text-3xl">🌰</span>
+      <span class="flex-1"><span class="block text-[12px] font-bold text-terracotta-dark uppercase">Missão da Época</span><span class="block font-bold">Festa da Castanha · Curral das Freiras</span></span>
+      ${chip('2× pontos', 'bg-terracotta text-white')}
+    </button>
+    <div class="space-y-2">
+      ${btn('Começar Aventura →', state.onboarded ? "go('mapa')" : "go('onboarding')")}
+      ${btn2('📖 Como jogar', "go('instrucoes')")}
+    </div>
+    <p class="text-center text-[12px] text-slate-500 pb-2">Projeto académico · UMa · Desafio 8 Startup Madeira · OpenInnoMAC · 2026</p>
+  </div>`,
+
+onboarding: () => `
+  <div class="p-4 space-y-4">
+    <div class="relative rounded-[28px] overflow-hidden bg-gradient-to-b from-slate-700 to-slate-900 text-white p-4 pt-3 min-h-[200px]">
+      ${chip('⛰️ Pico do Arieiro · 1818 m', 'bg-white/15 text-white')}
+      <div class="absolute right-6 top-12 w-14 h-14 rounded-full bg-rose-300/70"></div>
+      <svg viewBox="0 0 400 120" class="absolute bottom-0 left-0 w-full" aria-hidden="true"><path d="M0 120 L0 80 L80 40 L150 90 L230 20 L300 85 L400 50 L400 120 Z" fill="#1F2A30"/><path d="M0 120 L0 104 L400 96 L400 120 Z" fill="#E8ECEB"/></svg>
+      <div class="relative flex justify-center mt-6">${bird('w-28 h-24')}</div>
+    </div>
+    ${card(`
+      <div class="flex items-center justify-between gap-2"><h2 class="text-xl font-bold">Freira-da-Madeira</h2>${chip('Espécie ameaçada', 'bg-terracotta-light text-terracotta-dark')}</div>
+      <p class="text-[15px] text-slate-700 italic leading-snug mt-2">«O Pico do Arieiro está cheio de gente e barulho. Ajudas-me a encontrar lugares calmos e a conhecer quem vive na ilha? Por cada lugar, recupero uma pena.»</p>
+      <p class="text-[13px] text-slate-500 mt-2">A Freira (<i>Pterodroma madeira</i>) é uma ave marinha que só faz ninho no maciço central da Madeira.</p>
+      <div class="mt-3 flex justify-between text-sm font-semibold"><span>Penas recuperadas</span><span class="text-primary">${penas()}/10</span></div>
+      <div class="mt-1.5">${progressBar(penas())}</div>`)}
+    <h3 class="font-bold text-lg px-1">Como funciona</h3>
+    ${[
+      ['🧭', 'Foge às multidões', 'Descobre aldeias e trilhos calmos.'],
+      ['⭐', 'Ganha 2× pontos', 'Visita fora das horas de ponta.'],
+      ['🧺', 'Conhece a Madeira autêntica', 'Ofícios, produtores locais e festas tradicionais.']
+    ].map(([i, t, d]) => `<div class="flex gap-3 items-center bg-white rounded-2xl p-3 border border-slate-100"><span class="w-11 h-11 rounded-2xl bg-primary-light flex items-center justify-center text-xl">${i}</span><div><div class="font-bold">${t}</div><div class="text-sm text-slate-600">${d}</div></div></div>`).join('')}
+    ${btn('Ajudar a Freira e Começar →', "state.onboarded=true; go('mapa', {sound:'playWhoosh'})")}
+  </div>`,
+
+menu: () => `
+  <div class="p-4 space-y-3">
+    <div class="rounded-[28px] bg-gradient-to-br from-primary to-primary-dark text-white p-4 flex items-center gap-3">
+      <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center">${bird('w-14 h-12')}</div>
+      <div><div class="text-xl font-extrabold">Missão Freira</div><div class="text-sm text-sky-100">Ajuda a Freira a encontrar os recantos calmos da ilha.</div></div>
+    </div>
+    <button onclick="go('mapa')" class="w-full text-left rounded-2xl bg-primary-dark text-white p-4">
+      <div class="flex justify-between font-bold"><span>▶ Continuar Aventura</span><span>→</span></div>
+      <div class="text-sm text-sky-100 mt-0.5">Último local: ${state.visited[state.visited.length - 1].nome}</div>
+      <div class="mt-2 flex items-center gap-2 text-sm"><div class="flex-1">${progressBar(penas(), 10, 'bg-pena')}</div>${penas()}/10 penas</div>
+    </button>
+    <button onclick="resetProgress()" class="w-full text-left rounded-2xl bg-secondary-dark text-white p-4 font-bold">🌱 Novo Jogo <span class="block text-sm font-normal text-green-100">${resetArmed ? 'Toca outra vez para recomeçar do zero' : 'Recomeçar com 0 penas'}</span></button>
+    <button onclick="state.familyMode=true; presetFilter(['familias'], true)" class="w-full text-left rounded-2xl bg-secondary-light border border-green-200 p-4">
+      <div class="font-bold text-secondary-dark">👨‍👩‍👧 Modo Família →</div><div class="text-sm text-slate-600">Percursos curtos e seguros para crianças</div>
+    </button>
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="go('opcoes')" class="text-left rounded-2xl bg-primary-light p-4"><div class="text-xl">⚙️</div><div class="font-bold">Opções</div><div class="text-sm text-slate-600">Som e idioma</div></button>
+      <button onclick="go('instrucoes')" class="text-left rounded-2xl bg-primary-light p-4"><div class="text-xl">📖</div><div class="font-bold">Instruções</div><div class="text-sm text-slate-600">Como jogar</div></button>
+    </div>
+    <button onclick="presetFilter(['artesanato','produtos'])" class="w-full text-left rounded-2xl bg-white border border-slate-100 p-4 flex gap-3 items-center"><span class="text-2xl">🧑‍🎨</span><span><span class="block font-bold">Artesãos e Produtores</span><span class="block text-sm text-slate-600">Conhece quem faz a Madeira</span></span></button>
+    <button onclick="jump('abertura')" class="w-full py-3 text-sm font-semibold text-slate-600">⎋ Sair da expedição</button>
+  </div>`,
+
+mapa: () => {
+  const list = Object.entries(PLACES).filter(([, p]) => matches(p));
+  const filtered = state.cats.length || state.calmo || state.kids;
+  const pin = (id, p, crowded) => {
+    const on = crowded ? !filtered : matches(p);
+    const right = p.pin.x > 70;
+    const done = !crowded && isVisited(id);
+    return `<button onclick="${crowded ? "sfx('playPause'); toast('O Pico do Arieiro está cheio. A Freira sugere a Camacha!')" : `openPlace('${id}')`}"
+      class="absolute flex items-center gap-1 ${right ? 'flex-row-reverse' : ''} transition ${on ? '' : 'opacity-25'}"
+      style="left:${p.pin.x}%; top:${p.pin.y}%; transform: translate(${right ? 'calc(-100% + 7px)' : '-7px'}, -50%)">
+      <span class="w-3.5 h-3.5 rounded-full border-2 border-white shadow ${crowded ? 'bg-terracotta-dark' : done ? 'bg-pena' : 'bg-secondary-dark'}"></span>
+      <span class="text-[11px] font-bold px-1.5 py-0.5 rounded-md shadow-sm whitespace-nowrap ${crowded ? 'bg-terracotta-dark text-white' : 'bg-white text-slate-800'}">${done ? '✓ ' : ''}${p.pin.label}</span>
+    </button>`;
+  };
+  return `
+  <div class="p-4 space-y-4">
+    ${state.radar ? `<div class="bg-terracotta-light border border-orange-200 rounded-3xl p-4 flex gap-3">
+      <div class="shrink-0 w-12 h-12 rounded-full bg-white flex items-center justify-center">${bird('w-10 h-9')}</div>
+      <div class="flex-1">
+        <div class="text-[12px] font-bold text-terracotta-dark uppercase">Alerta de multidões · Hora de ponta</div>
+        <p class="text-[15px] leading-snug mt-0.5">O <b>Pico do Arieiro</b> está cheio (94%). A Freira sugere a <b>Camacha</b>: oficina de vime a 20 min, com atividades para os miúdos!</p>
+        <div class="mt-2 flex gap-2">${chip('⚡ 2× pontos', 'bg-terracotta-dark text-white')}<button onclick="openPlace('camacha')" class="text-sm font-bold text-primary">Ver Camacha →</button></div>
+      </div>
+    </div>` : ''}
+    ${card(`<div class="flex justify-between text-sm font-semibold"><span>🪶 Penas recolhidas: ${penas()}/10</span><span class="text-primary">${state.pontos} pontos</span></div><div class="mt-2">${progressBar(penas())}</div>`, 'py-3')}
+    <div class="space-y-2">
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-0.5">
+        ${Object.entries(CATS).map(([k, c]) => {
+          const on = state.cats.includes(k);
+          return `<button onclick="toggleCat('${k}')" aria-pressed="${on}" class="shrink-0 px-3 py-2 rounded-full text-sm font-semibold border transition ${on ? 'bg-primary-dark text-white border-primary-dark' : 'bg-white text-slate-700 border-slate-200'}">${c.icon} ${c.label}${on ? ' ✓' : ''}</button>`;
+        }).join('')}
+      </div>
+      <div class="flex gap-2 overflow-x-auto no-scrollbar">
+        <button onclick="toggleFilter('calmo')" aria-pressed="${state.calmo}" class="shrink-0 px-3 py-2 rounded-full text-sm font-semibold border ${state.calmo ? 'bg-secondary-dark text-white border-secondary-dark' : 'bg-secondary-light text-secondary-dark border-green-200'}">🍃 Calmo agora (2× pontos)</button>
+        <button onclick="toggleFilter('kids')" aria-pressed="${state.kids}" class="shrink-0 px-3 py-2 rounded-full text-sm font-semibold border ${state.kids ? 'bg-secondary-dark text-white border-secondary-dark' : 'bg-secondary-light text-secondary-dark border-green-200'}">🙂 Fácil para crianças</button>
+      </div>
+    </div>
+    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-b from-sky-100 to-sky-200 border border-sky-200" style="aspect-ratio: 2 / 1.15">
+      <svg viewBox="0 0 400 230" class="absolute inset-0 w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M18 120 C26 88 70 66 115 62 C165 56 205 50 255 58 C300 64 338 70 368 88 C392 100 398 112 384 120 C360 132 320 150 270 160 C215 172 160 172 110 162 C62 152 20 146 18 120 Z" fill="#CFE8C4" stroke="#8DBB7E" stroke-width="2"/>
+        <ellipse cx="220" cy="108" rx="70" ry="28" fill="#B4D6A4" opacity=".8"/>
+        
+      </svg>
+      <div class="absolute top-2 left-2">${chip('● Radar Calmo · Madeira', 'bg-white text-slate-800 shadow-sm')}</div>
+      ${Object.entries(PLACES).map(([id, p]) => pin(id, p)).join('')}
+      ${pin('arieiro', CROWDED, true)}
+      <div class="absolute bottom-2 right-2 bg-white/90 rounded-full px-2.5 py-1 text-[11px] font-semibold flex gap-2">
+        <span><span class="inline-block w-2 h-2 rounded-full bg-secondary-dark"></span> Calmo</span>
+        <span><span class="inline-block w-2 h-2 rounded-full bg-terracotta-dark"></span> Cheio</span>
+        <span><span class="inline-block w-2 h-2 rounded-full bg-pena"></span> Visitado</span>
+      </div>
+    </div>
+    <div class="flex items-end justify-between px-1">
+      <div><h2 class="text-xl font-bold">${filtered ? 'Rotas recomendadas' : 'Missões calmas'}</h2><p class="text-sm text-slate-500">Descobre lugares calmos e cheios de história</p></div>
+      <span class="text-sm font-bold text-primary whitespace-nowrap">${list.length} sugest${list.length === 1 ? 'ão' : 'ões'}</span>
+    </div>
+    ${list.length ? list.map(([id, p]) => placeCard(id, p)).join('') : card('<p class="text-center text-slate-600">Nenhum local com estes filtros. Tira um filtro para ver mais.</p>')}
+    ${filtered ? `<button onclick="state.cats=[];state.calmo=false;state.kids=false;render(true)" class="w-full py-2 text-sm font-semibold text-primary">Limpar filtros</button>` : ''}
+  </div>`;
+},
+
+local: () => {
+  const p = PLACES.camacha;
+  return `
+  <div class="p-4 space-y-4">
+    <div class="h-48 rounded-3xl bg-gradient-to-br ${p.grad} relative flex items-center justify-center text-7xl shadow">
+      🏚️🧺
+      <span class="absolute bottom-3 left-3">${chip('📷 Fachada da oficina', 'bg-black/40 text-white')}</span>
+    </div>
+    <div class="flex flex-wrap gap-1.5">${chip('🧺 Artesanato', 'bg-amber-100 text-amber-900')}${chip('👨‍👩‍👧 Ideal para famílias', 'bg-primary-light text-primary')}${chip('🍃 Calmo (2× pontos)', 'bg-secondary-light text-secondary-dark')}</div>
+    <div>
+      <h2 class="text-2xl font-bold">Oficina de Vime · Camacha</h2>
+      <p class="text-[15px] text-slate-600 mt-1 leading-snug">Na Camacha, o vime é trabalhado à mão há várias gerações. Aqui podes ver como se transformam ramos flexíveis em cestos, cadeiras e brinquedos.</p>
+    </div>
+    ${card(`<div class="space-y-3 text-[15px]">
+      <div>📍 <span class="text-slate-500 text-sm">Morada:</span> Largo da Achada, Camacha <span class="text-slate-400">[a confirmar]</span></div>
+      <div>🕘 <span class="text-slate-500 text-sm">Horário:</span> 09:00–18:00 <span class="text-slate-400">[exemplo]</span></div>
+    </div>`)}
+    ${freiraSays('Os mestres da Camacha gostam de mostrar os seus segredos. Se perguntares com gentileza, deixam-te tocar no vime molhado!', 'Conselho da Freira')}
+    ${card(`<h3 class="font-bold text-lg">👨‍👩‍👧 Para famílias</h3>
+      <div class="grid grid-cols-2 gap-2 mt-3 text-sm">
+        <div class="bg-slate-50 rounded-2xl p-3">🧒 <b>Idade 4+</b></div><div class="bg-slate-50 rounded-2xl p-3">⏱️ <b>30–45 min</b></div>
+        <div class="col-span-2 bg-slate-50 rounded-2xl p-3">☕ Casa de banho e café perto</div>
+        <div class="col-span-2 bg-slate-50 rounded-2xl p-3">🛡️ Percurso fácil, sem precipícios</div>
+      </div>`)}
+    <div class="space-y-2">
+      ${btn('✂️ Conhecer o Ofício →', "go('oficio')")}
+      ${btn('👨‍👩‍👧 Atividade: Pequenos Artesãos', "go('familia')", 'bg-secondary-dark hover:bg-green-900 text-white')}
+      ${btn2('🧭 Como chegar', "toast('Abriria o percurso no mapa do telemóvel (simulado).')")}
+    </div>
+  </div>`;
+},
+
+oficio: () => `
+  <div class="p-4 space-y-4">
+    ${card(`<div class="flex gap-3 items-start"><div class="w-14 h-14 shrink-0 rounded-full bg-primary-light flex items-center justify-center">${bird('w-12 h-10')}</div>
+      <div><div class="text-[12px] font-bold text-secondary-dark uppercase">Tradição viva da Camacha</div><h2 class="text-xl font-bold">A Arte do Vime</h2>
+      <p class="text-[15px] text-slate-600 leading-snug mt-1">O vime é um ramo fino e flexível. Os artesãos da Camacha transformam-no em cestos, cadeiras e brinquedos.</p></div></div>`)}
+    <div class="flex items-center justify-between px-1"><h3 class="text-lg font-bold">Como se faz</h3>${chip('4 passos')}</div>
+    ${[
+      ['🌿', 'Corte do vime', 'Os ramos são cortados junto às ribeiras.'],
+      ['♨️', 'Cozedura e descasque', 'O vime é cozido para amolecer e tirar a casca.'],
+      ['☀️', 'Secagem ao sol', 'Os ramos secam em feixes e ficam resistentes.'],
+      ['👐', 'Entrançar à mão', 'Com paciência, as mãos dão forma a cada peça.']
+    ].map(([i, t, d], n) => `<div class="flex gap-3 bg-white rounded-2xl p-3 border border-slate-100"><span class="w-11 h-11 shrink-0 rounded-2xl bg-secondary-light flex items-center justify-center text-xl">${i}</span><div><div class="font-bold">${n + 1}. ${t}</div><div class="text-sm text-slate-600">${d}</div></div></div>`).join('')}
+    <p class="text-[12px] text-slate-500 px-1">Descrição simplificada do processo — a confirmar com os artesãos.</p>
+    ${card(`<div class="flex gap-3 items-center"><div class="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-3xl">🧑‍🦳</div>
+      <div><div class="font-bold">[Nome do artesão]</div><div class="text-sm text-primary">Personagem fictícia · exemplo</div></div></div>
+      <p class="italic text-slate-700 mt-3">«Cada cesto leva a paciência da nossa serra.»</p>`, 'bg-primary-light/50')}
+    ${card(`<div class="font-bold text-terracotta-dark">🏆 Desafio em destaque</div><p class="text-sm text-slate-700 mt-1">Desbloqueia o carimbo <b>«Mestre do Vime»</b>. Recompensa: <b>+1 pena</b> e <b>+40 pontos</b> (20 × 2, horário calmo).</p>`, 'bg-terracotta-light border-orange-200')}
+    ${btn('Aceitar Desafio do Vime →', "go('desafio')")}
+  </div>`,
+
+familia: () => `
+  <div class="p-4 space-y-4">
+    <div class="h-40 rounded-3xl bg-gradient-to-br from-sky-300 via-emerald-500 to-emerald-900 relative p-4 flex flex-col justify-end text-white shadow">
+      <span class="absolute top-3 left-3">${chip('👨‍👩‍👧 Modo Família', 'bg-white/90 text-secondary-dark')}</span>
+            <h2 class="text-2xl font-bold">Passeio dos Pequenos Artesãos</h2><p class="text-sm">Descobre o vime entre sombras frescas e ruas calmas.</p>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      ${[['🧒', 'Idade', '4–10 anos'], ['✅', 'Dificuldade', 'Fácil'], ['⏱️', 'Duração', '1 hora'], ['📏', 'Distância', '1,5 km']]
+        .map(([i, l, v]) => `<div class="bg-white rounded-2xl p-3 border border-slate-100 flex gap-2 items-center"><span class="text-xl">${i}</span><div><div class="text-[12px] text-slate-500">${l}</div><div class="font-bold">${v}</div></div></div>`).join('')}
+    </div>
+    ${card(`<h3 class="font-bold">🛡️ Segurança e conforto</h3><div class="flex flex-wrap gap-1.5 mt-2">${['Sem precipícios', 'Sombra', 'Carrinho de bebé', 'Casa de banho perto'].map(t => chip('✓ ' + t, 'bg-secondary-light text-secondary-dark')).join('')}</div>`)}
+    ${freiraSays('Um passeio calmo, sem pressas nem filas, para toda a família respirar o ar da serra!')}
+    <h3 class="text-lg font-bold px-1">O que fazer juntos</h3>
+    ${[['👀', 'Oficina de vime ao vivo', 'Ver um cesto a nascer pelas mãos dos artesãos.'],
+       ['🔍', 'Caça ao vime escondido', 'Procurar 3 peças de vime pela vila. Ganha o emblema «Pequeno Explorador».'],
+       ['🥖', 'Pausa no café', 'Lanchar bolo do caco num café calmo.']]
+      .map(([i, t, d], n) => `<div class="flex gap-3 bg-white rounded-2xl p-3 border border-slate-100"><span class="w-8 h-8 shrink-0 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center">${n + 1}</span><div><div class="font-bold">${i} ${t}</div><div class="text-sm text-slate-600">${d}</div></div></div>`).join('')}
+    ${card(`<div class="flex justify-between items-center"><h3 class="font-bold">Ponto de encontro</h3><span class="text-sm text-secondary-dark font-semibold">Largo da Achada</span></div>
+      <svg viewBox="0 0 320 150" class="w-full mt-2 rounded-2xl bg-sky-50" role="img" aria-label="Esquema do centro da Camacha">
+        <path d="M10 120 Q120 70 310 40" stroke="#D5DEE5" stroke-width="16" fill="none" stroke-linecap="round"/>
+        <path d="M60 20 Q140 70 210 140" stroke="#D5DEE5" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <rect x="18" y="14" width="78" height="34" rx="10" fill="#EDF7EB"/><text x="28" y="35" font-size="11" fill="#356A29" font-family="sans-serif">Jardim</text>
+        <path d="M100 52 L150 82 L230 64 L205 120" stroke="#1E5F8B" stroke-width="2.5" stroke-dasharray="5 5" fill="none"/>
+        <circle cx="100" cy="52" r="8" fill="#1E5F8B"/><text x="14" y="78" font-size="11" fill="#134363" font-family="sans-serif">Início: Relógio</text>
+        <circle cx="150" cy="82" r="13" fill="#FDE68A" stroke="#E8C547" stroke-width="3"/><text x="132" y="108" font-size="10" fill="#7B2613" font-family="sans-serif">Largo</text>
+        <circle cx="230" cy="64" r="8" fill="#BF5841"/><text x="242" y="62" font-size="11" fill="#7B2613" font-family="sans-serif">Oficina</text>
+        <circle cx="205" cy="120" r="8" fill="#356A29"/><text x="218" y="124" font-size="11" fill="#356A29" font-family="sans-serif">Café</text>
+      </svg><p class="text-[12px] text-slate-500 mt-1">Percurso a pé · 1,5 km · fácil (esquema simplificado)</p>`)}
+    ${btn('Começar Atividade em Família →', "go('desafio')")}
+    <p class="text-center text-[12px] text-slate-500">Podem pausar ou terminar a qualquer momento.</p>
+  </div>`,
+
+desafio: () => {
+  const done = state.tasks.filter(Boolean).length;
+  return `
+  <div class="p-4 space-y-4">
+    ${card(`<div class="flex gap-3 items-start"><div class="w-14 h-14 shrink-0 rounded-full bg-primary-light flex items-center justify-center">${bird('w-12 h-10')}</div>
+      <div>${chip('🍃 Refúgio calmo · Camacha', 'bg-secondary-light text-secondary-dark')}<h2 class="text-xl font-bold mt-1">Missão dos Pequenos Artesãos</h2>
+      <p class="text-sm text-slate-600">Faz as descobertas na oficina e ganha o carimbo <b class="text-terracotta-dark">«Mestre do Vime»</b> e 1 pena.</p></div></div>`)}
+    ${card(`<div class="flex justify-between font-semibold"><span>Progresso no terreno</span>${chip(`${done} de 4 concluídos`, 'bg-terracotta-light text-terracotta-dark')}</div>
+      <div class="mt-2">${progressBar(done, 4, 'bg-secondary-dark')}</div>`)}
+    <div class="flex justify-between px-1"><h3 class="font-bold">Descobertas na oficina</h3><span class="text-sm text-slate-500">Toca para marcar</span></div>
+    ${TASKS.map((t, i) => `<button onclick="toggleTask(${i})" aria-pressed="${state.tasks[i]}" class="w-full text-left flex gap-3 items-start bg-white rounded-2xl p-4 border ${state.tasks[i] ? 'border-green-300 bg-secondary-light/40' : 'border-slate-100'}">
+      <span class="shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center text-white text-sm ${state.tasks[i] ? 'bg-secondary-dark border-secondary-dark' : 'border-slate-300'}">${state.tasks[i] ? '✓' : ''}</span>
+      <span><span class="block text-lg">${t.icon}</span><span class="block font-semibold ${state.tasks[i] ? 'line-through text-slate-500' : ''}">${t.t}</span><span class="block text-sm text-slate-500">${t.ex}</span></span>
+    </button>`).join('')}
+    <button onclick="toast('Fotografias: funcionalidade futura (ficam só no telemóvel).')" class="text-sm font-semibold text-primary px-1">📷 Adicionar foto (futuro)</button>
+    ${card(`<h3 class="font-bold">🎁 Recompensas da missão</h3><ul class="mt-2 space-y-1.5 text-[15px]">
+      <li>🪶 <b>+1 pena</b> · +40 pontos (20 × 2, calmo)</li><li>🧺 Carimbo <b>«Mestre do Vime»</b></li>
+      <li>🏅 Emblema <b>«Pequeno Explorador»</b> <span class="text-sm text-slate-500">(com as 4 descobertas)</span></li></ul>`)}
+    ${btn('🔳 Validar Visita no Local →', "startCheckin('camacha')")}
+    ${btn2('🔖 Guardar e continuar mais tarde', "toast('Desafio guardado.'); go('mapa')")}
+  </div>`;
+},
+
+missao: () => {
+  const id = state.mission === 'camacha' ? 'farol' : state.mission;
+  state.mission = id;
+  const p = PLACES[id], done = isVisited(id);
+  return `
+  <div class="p-4 space-y-4">
+    <div class="h-48 rounded-3xl bg-gradient-to-br ${p.grad} relative flex items-center justify-center text-7xl shadow">${p.emoji}
+      <div class="absolute top-3 left-3 flex gap-1">${chip(p.calmo ? '🍃 Lugar calmo' : '👥 Afluência moderada', 'bg-white/90 text-secondary-dark')}${p.calmo ? chip('⚡ 2× pontos', 'bg-white/90 text-terracotta-dark') : ''}</div>
+      <div class="absolute bottom-3 left-4 text-white"><div class="text-[12px] font-bold uppercase">${p.local}</div><div class="text-2xl font-bold">${p.nome}</div></div>
+    </div>
+    ${freiraSays(done ? `Obrigada! Já me devolveste a pena deste lugar. Vamos procurar outro recanto calmo?` : `Este lugar é calmo, longe das multidões. Ajuda-me a recuperar a minha ${ord(penas() + 1)} pena!`)}
+    ${card(`<h3 class="font-bold text-lg">👨‍👩‍👧 Para famílias</h3><div class="flex flex-wrap gap-1.5 mt-2">${chip('🧒 Idade: ' + p.idade, 'bg-primary-light text-primary')}${chip('⏱️ ' + p.tempo, 'bg-primary-light text-primary')}</div>
+      ${p.aviso ? `<div class="mt-2 bg-terracotta-light text-terracotta-dark rounded-2xl p-3 text-sm font-semibold">⚠️ Atenção: ${p.aviso}</div>` : `<div class="mt-2 bg-secondary-light text-secondary-dark rounded-2xl p-3 text-sm font-semibold">✓ Adequado para crianças</div>`}`)}
+    ${card(`<h3 class="font-bold text-lg">🎯 Objetivos da missão</h3>
+      <div class="mt-2 space-y-2">
+        <div class="flex gap-3 items-center bg-secondary-light rounded-2xl p-3"><span class="w-7 h-7 rounded-full bg-secondary-dark text-white flex items-center justify-center">✓</span><div><div class="font-semibold">Chegar a ${p.local.split(' · ')[0]}</div><div class="text-sm text-slate-600">GPS confirmado (a ${p.gps}) · simulado</div></div></div>
+        <div class="flex gap-3 items-center bg-slate-50 rounded-2xl p-3"><span class="w-7 h-7 rounded-full border-2 border-slate-300 ${done ? 'bg-secondary-dark border-secondary-dark text-white flex items-center justify-center' : ''}">${done ? '✓' : ''}</span><div><div class="font-semibold">Ler o QR code no marco de madeira</div><div class="text-sm text-slate-600">Confirma a tua visita no local</div></div></div>
+      </div>`)}
+    ${card(`<div class="text-[12px] font-bold text-primary uppercase">Ao concluir</div>
+      <div class="grid grid-cols-3 gap-2 mt-2 text-center">
+        <div class="bg-slate-50 rounded-2xl p-3"><div class="text-xl">🪶</div><div class="font-bold text-lg">+1</div><div class="text-[12px] text-slate-500">Pena</div></div>
+        <div class="bg-slate-50 rounded-2xl p-3"><div class="text-xl">⭐</div><div class="font-bold text-lg">+${p.calmo ? 40 : 20}</div><div class="text-[12px] text-slate-500">Pontos</div></div>
+        <div class="bg-slate-50 rounded-2xl p-3"><div class="text-xl">${p.carimbo ? STAMPS[p.carimbo].icon : '☕'}</div><div class="font-bold text-sm mt-1">${p.carimbo ? 'Carimbo' : p.parceiro ? 'Desconto' : 'Surpresa'}</div><div class="text-[12px] text-slate-500">${p.carimbo ? STAMPS[p.carimbo].nome : 'parceiro local'}</div></div>
+      </div>
+      ${p.parceiro ? `<div class="mt-2 bg-slate-50 rounded-2xl p-3 text-sm"><b>${p.parceiro.nome}</b><br>${p.parceiro.oferta}</div>` : ''}`)}
+    ${done ? btn2('✓ Pena já recolhida · voltar ao mapa', "go('mapa')") : `${btn('📍 Fazer Check-in (GPS)', `startCheckin('${id}')`)}${btn2('🔳 Ler QR no marco', `startCheckin('${id}')`)}`}
+    <p class="text-center text-sm text-slate-500">Visitar fora da hora de ponta protege os trilhos e os ninhos da Freira.</p>
+  </div>`;
+},
+
+checkin: () => {
+  const p = PLACES[state.mission];
+  return `
+  <div class="min-h-full text-white p-4 space-y-4">
+    <div class="relative h-72 rounded-3xl overflow-hidden bg-gradient-to-br ${p.grad} flex items-center justify-center">
+      <div class="absolute inset-6 border-2 border-white/80 rounded-2xl"></div>
+      ${scanning ? `<div class="scanline absolute left-8 right-8 h-0.5 bg-pena shadow-[0_0_12px_#E8C547]"></div>` : ''}
+      <div class="text-center"><div class="w-24 h-24 mx-auto bg-white rounded-xl grid grid-cols-5 gap-0.5 p-2">${Array.from({ length: 25 }, (_, i) => `<div class="${[0, 1, 3, 4, 5, 7, 9, 12, 15, 16, 18, 20, 21, 23, 24].includes(i) ? 'bg-slate-900' : ''}"></div>`).join('')}</div>
+      <div class="mt-3 text-sm font-semibold">${scanning ? 'A ler o código…' : 'Alinha o código QR do marco no visor'}</div></div>
+      <span class="absolute top-3 left-3">${chip('● Modo verificação', 'bg-black/50 text-white')}</span>
+    </div>
+    <div class="bg-white text-slate-800 rounded-3xl p-4 space-y-3">
+      <div class="flex justify-between items-start"><div><div class="font-bold text-lg">${p.nome}</div><div class="text-sm text-slate-500">${p.local}</div></div>${chip(p.calmo ? '🍃 Calmo' : 'Moderado', 'bg-secondary-light text-secondary-dark')}</div>
+      <div class="bg-secondary-light rounded-2xl p-3 text-sm font-semibold text-secondary-dark">● Sinal GPS confirmado · a ${p.gps} (simulado)</div>
+      <div class="text-sm flex justify-between"><span>Penas recolhidas</span><b>${penas()}/10</b></div>${progressBar(penas(), 10, 'bg-terracotta')}
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button onclick="validate('qr')" class="py-3 rounded-2xl bg-primary text-white font-bold">🔳 Validar QR</button>
+        <button onclick="validate('gps')" class="py-3 rounded-2xl bg-secondary-dark text-white font-bold">📍 Só por GPS</button>
+      </div>
+      <p class="text-center text-[12px] text-slate-500">Problemas com a câmara? Usa a validação por GPS (raio de 50 m).</p>
+    </div>
+  </div>`;
+},
+
+recompensa: () => {
+  const r = state.lastReward || { id: 'camacha', nova: true, pontos: 40, base: 20, mult: 2, carimbo: 'vime', emblema: false, n: penas(), preview: true };
+  const p = PLACES[r.id];
+  const full = r.n >= 10;
+  const next = Object.entries(PLACES).find(([id]) => !isVisited(id));
+  return `
+  <div class="p-4 space-y-4">
+    <div class="text-center bg-gradient-to-b from-secondary-light to-white rounded-[28px] p-5 border border-green-100">
+      ${chip(r.nova ? '✓ Expedição calma concluída' : 'Visita repetida', 'bg-secondary-dark text-white')}
+      <h2 class="text-3xl font-extrabold mt-2">${full ? 'Plumagem completa!' : r.nova ? 'Missão Cumprida!' : 'Bem-vindo de volta!'}</h2>
+      <p class="text-slate-600 text-sm">${p.nome} · ${p.local}</p>
+      <div class="feather-in text-7xl my-3">🪶</div>
+      ${chip(`🪶 ${r.n}/10 penas`, 'bg-white text-primary text-base shadow')}
+      <div class="mt-3">${segments(r.n)}</div>
+      <p class="text-sm font-semibold text-terracotta-dark mt-2">${full ? 'A Freira está salva!' : `Faltam ${10 - r.n}`}</p>
+    </div>
+    ${freiraSays(r.nova ? `Obrigada! ${r.id === 'camacha' ? 'Aprendeste a arte do vime e ajudaste-me' : 'Este lugar calmo ajudou-me'} a recuperar mais uma pena!` : 'Já tens a pena deste lugar. Que tal descobrir um recanto novo?')}
+    ${r.nova ? card(`<h3 class="font-bold text-lg">Ganhos da expedição</h3><ul class="mt-2 space-y-2">
+      <li class="flex justify-between bg-slate-50 rounded-2xl p-3"><span>🪶 Pena ${p.de}</span><b>+1</b></li>
+      <li class="flex justify-between bg-slate-50 rounded-2xl p-3"><span>⭐ Pontos ${r.mult > 1 ? `<span class="text-sm text-slate-500">(${r.base} × 2, calmo)</span>` : ''}</span><b>+${r.pontos}</b></li>
+      ${r.carimbo ? `<li class="flex justify-between bg-amber-50 rounded-2xl p-3"><span>${STAMPS[r.carimbo].icon} Carimbo «${STAMPS[r.carimbo].nome}»</span><b>+1</b></li>` : ''}
+      ${r.emblema ? `<li class="flex justify-between bg-primary-light rounded-2xl p-3"><span>🏅 Emblema «Pequeno Explorador»</span><b>+1</b></li>` : ''}
+    </ul>${r.preview ? '<p class="text-[12px] text-slate-500 mt-2">Pré-visualização (ainda não validaste nenhuma visita).</p>' : ''}`) : ''}
+    ${p.parceiro && r.nova ? card(`<div class="text-[12px] font-bold text-terracotta-dark uppercase">Novo vale desbloqueado</div><div class="font-bold mt-1">${p.parceiro.nome}</div><div class="text-sm text-slate-600">${p.parceiro.oferta} · válido 48 h</div>`, 'bg-terracotta-light border-orange-200') : ''}
+    ${next && !full ? `<button onclick="openPlace('${next[0]}')" class="w-full text-left bg-white rounded-2xl p-3 border border-slate-100 flex items-center gap-3"><span class="text-2xl">${next[1].emoji}</span><span class="flex-1"><span class="block text-[12px] text-slate-500">Próximo recanto calmo</span><span class="block font-bold">${next[1].nome}</span></span>→</button>` : ''}
+    ${btn('📖 Ver na Caderneta', "openCaderneta('carimbos')")}
+    ${btn2('Continuar a explorar →', "go('mapa')")}
+    <button onclick="toast('Partilha: funcionalidade futura (menu de partilha do telemóvel).')" class="w-full py-2 text-sm font-semibold text-primary">↗ Partilhar conquista</button>
+  </div>`;
+},
+
+caderneta: () => {
+  const tab = state.cadTab;
+  const tabs = [['penas', 'Penas'], ['carimbos', 'Carimbos'], ['premios', 'Prémios']];
+  let body = '';
+  if (tab === 'penas') {
+    body = `<div class="grid grid-cols-2 gap-2">${Array.from({ length: 10 }, (_, i) => {
+      const v = state.visited[i];
+      return `<div class="rounded-2xl p-3 border ${v ? 'bg-white border-amber-200' : 'bg-slate-50 border-dashed border-slate-300 text-slate-400'}">
+        <div class="text-2xl ${v ? '' : 'grayscale opacity-40'}">🪶</div><div class="text-sm font-bold">${v ? v.nome : 'Pena ' + (i + 1)}</div><div class="text-[12px]">${v ? 'Recolhida' : 'Por descobrir'}</div></div>`;
+    }).join('')}</div>`;
+  } else if (tab === 'carimbos') {
+    body = `<div class="grid grid-cols-2 gap-2">${Object.entries(STAMPS).map(([k, s]) => {
+      const has = state.carimbos.includes(k);
+      return `<div class="rounded-2xl p-4 text-center border ${has ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200 text-slate-400'}">
+        <div class="mx-auto w-16 h-16 rounded-full border-2 ${has ? 'border-secondary-dark bg-white' : 'border-dashed border-slate-300'} flex items-center justify-center text-3xl ${has ? '' : 'grayscale opacity-40'}">${has ? s.icon : '🔒'}</div>
+        <div class="font-bold text-sm mt-2 ${has ? 'text-slate-800' : ''}">${s.nome}</div><div class="text-[12px]">${s.sitio}</div></div>`;
+    }).join('')}</div>
+    ${state.emblema ? `<div class="mt-2 bg-primary-light rounded-2xl p-3 font-semibold">🏅 Emblema «Pequeno Explorador»</div>` : ''}`;
+  } else {
+    const prize = (id, label, sitio, title, text, need, unlocked, cost, action) => {
+      const used = state.redeemed.includes(id);
+      return card(`<div class="text-[12px] font-bold text-secondary-dark uppercase">${label} · ${sitio}</div>
+        <div class="text-lg font-bold">${title}</div><p class="text-sm text-slate-600">${text}</p>
+        <div class="mt-2 flex items-center justify-between gap-2">${chip(need, unlocked ? 'bg-secondary-light text-secondary-dark' : 'bg-slate-100 text-slate-500')}</div>
+        <div class="mt-3">${used ? btn2('🔳 Mostrar vale', `showVoucher('${id}')`) : unlocked ? btn(action, `redeem('${id}', ${cost})`) : `<div class="text-center text-sm font-semibold text-slate-400 py-2">🔒 Ainda bloqueado</div>`}</div>`);
+    };
+    body = [
+      prize('cafe', 'Parceiro local', 'Ponta do Pargo', 'Café «O Farol» (exemplo)', '15% em café e bolo do caco com manteiga de alho.', penas() >= 4 ? 'Desbloqueado com a 4.ª pena' : 'Desbloqueia com a 4.ª pena', penas() >= 4, 0, '🔳 Mostrar QR ao funcionário'),
+      prize('adega', 'Produtor local', 'Achadas da Cruz', 'Adega Tradicional (exemplo)', 'Prova de produtos regionais antes de descer de teleférico.', `50 pontos · tens ${state.pontos}`, state.pontos >= 50, 50, 'Trocar (50 pts)'),
+      prize('vime', 'Artesão', 'Camacha', 'Oficina de Vime (exemplo)', '10% em cestos e brinquedos de vime feitos à mão.', 'Carimbo «Mestre do Vime»', state.carimbos.includes('vime'), 0, 'Ver vale')
+    ].join('') + card(`<div class="text-center"><div class="font-bold text-lg">Tens um negócio numa zona rural?</div><p class="text-sm text-slate-600">Junta-te à Missão Freira e recebe visitantes longe das multidões.</p>
+      <button onclick="toast('Formulário de parceiros: funcionalidade futura.')" class="mt-2 px-4 py-2 rounded-full bg-white border font-bold text-primary">Quero ser parceiro</button></div>`, 'bg-primary-light border-sky-200');
+  }
+  return `
+  <div class="p-4 space-y-4">
+    ${card(`<div class="flex justify-between items-start"><div><h2 class="text-xl font-bold">A Plumagem da Freira</h2><p class="text-sm text-slate-500">Recupera penas em lugares calmos</p></div>
+      <div class="text-right"><div class="text-2xl font-extrabold text-primary">${state.pontos}</div><div class="text-[12px] font-semibold text-slate-500">pontos disponíveis</div></div></div>
+      <div class="mt-3 rounded-2xl bg-gradient-to-b from-sky-100 to-sky-200 h-36 relative flex items-end justify-center overflow-hidden">
+        <svg viewBox="0 0 300 100" class="absolute bottom-0 w-full" aria-hidden="true"><path d="M0 100 L0 60 L80 20 L150 70 L220 10 L300 60 L300 100Z" fill="#8FA9BA"/></svg>
+        <div class="relative mb-4">${bird('w-28 h-24')}</div>
+        <span class="absolute top-2 right-3">${chip(`🪶 ${penas()}/10`, 'bg-terracotta text-white')}</span>
+        <span class="absolute bottom-2">${chip(penas() >= 4 ? 'A Freira está mais calma!' : 'A Freira precisa de ajuda', 'bg-white/90 text-slate-700')}</span>
+      </div>
+      <div class="mt-3 flex justify-between text-sm font-semibold"><span>Penas recolhidas</span><span class="text-terracotta-dark">Faltam ${10 - penas()}</span></div>
+      <div class="mt-1.5">${segments(penas())}</div>
+      <div class="mt-3 flex justify-between items-center text-sm text-slate-600"><span>Menos multidões no Pico do Arieiro</span><button onclick="toast('Partilha: funcionalidade futura.')" class="px-3 py-1.5 rounded-full bg-primary-light text-primary font-bold">↗ Partilhar</button></div>`)}
+    <div class="grid grid-cols-3 bg-white rounded-full p-1 border border-slate-100" role="tablist">
+      ${tabs.map(([k, l]) => `<button role="tab" aria-selected="${tab === k}" onclick="setTab('${k}')" class="py-2 rounded-full text-sm font-bold ${tab === k ? 'bg-primary text-white' : 'text-slate-600'}">${l}</button>`).join('')}
+    </div>
+    ${body}
+  </div>`;
+},
+
+epoca: () => `
+  <div class="p-4 space-y-4">
+    <div><div class="text-[12px] font-bold text-secondary-dark uppercase">Tradições vivas da ilha</div><h2 class="text-2xl font-bold">Missões da Época e Festas</h2>
+      <p class="text-[15px] text-slate-600">Descobre a ilha ao ritmo das colheitas e das festas populares. Visita fora do pico e ganha a rara <b class="text-terracotta-dark">Pena Dourada</b>!</p></div>
+    <div class="rounded-[28px] bg-terracotta-dark text-white p-4 space-y-3">
+      <div class="flex gap-2">${chip('● A decorrer', 'bg-white text-terracotta-dark')}${chip('2× pontos + Pena Dourada', 'bg-green-200 text-secondary-dark')}</div>
+      <div class="h-28 rounded-2xl bg-gradient-to-br from-amber-500 to-stone-800 flex items-center justify-center text-6xl">🌰🔥</div>
+      <div class="flex justify-between items-end"><h3 class="text-xl font-bold">Festa da Castanha</h3><span class="text-sm">outubro–novembro</span></div>
+      <p class="text-sm text-orange-100">Visita o vale do Curral das Freiras e prova castanhas assadas enquanto a serra descansa.</p>
+      <div class="bg-black/20 rounded-2xl p-3 flex justify-between text-sm"><span>Bónus de preservação · horário matinal</span><b>+80 pts</b></div>
+      <button onclick="toast('Missão da festa disponível durante a festa (datas a confirmar).')" class="w-full py-3 rounded-2xl bg-white text-terracotta-dark font-bold">Ver missão da festa →</button>
+    </div>
+    <div class="flex justify-between items-center px-1"><h3 class="text-lg font-bold">Calendário de festas</h3><span>📅</span></div>
+    ${[['🍈', 'Março', 'Festa da Anona', 'Faial', 'Prova uma anona e descobre de onde vem.'],
+       ['🍒', 'Junho', 'Festa da Cereja', 'Jardim da Serra', 'Encontra uma cerejeira e conta as cerejas num ramo.'],
+       ['🍏', 'Setembro', 'Festa do Pero', 'Ponta do Pargo', 'Descobre para que se usa o pero na Madeira.']]
+      .map(([i, m, t, l, d]) => card(`<div class="flex gap-3"><div class="w-14 h-14 shrink-0 rounded-2xl bg-secondary-light flex items-center justify-center text-3xl">${i}</div>
+        <div class="flex-1"><div class="text-[12px] font-bold text-secondary-dark uppercase">${m}</div><div class="font-bold text-lg">${t}</div><div class="text-sm text-primary font-semibold">${l}</div><p class="text-sm text-slate-600 mt-1">${d}</p>
+        <div class="mt-2">${chip('🪶 Pena Dourada da Época · +50 pts', 'bg-amber-50 text-amber-800')}</div></div></div>`)).join('')}
+    ${card(`<p class="text-sm text-slate-700">ℹ️ As datas exatas devem ser confirmadas todos os anos com os municípios e produtores. Viajar nas épocas das colheitas distribui os visitantes pelas freguesias rurais.</p>`, 'bg-primary-light border-sky-200')}
+  </div>`,
+
+pausa: () => {
+  const p = PLACES[state.mission];
+  return `
+  <div class="min-h-full bg-gradient-to-b from-[#3E5A6A] to-[#24343D] text-white p-4 space-y-4">
+    <div class="text-center pt-4"><div class="mx-auto w-14 h-14 rounded-full bg-white/15 flex items-center justify-center text-xl font-bold">II</div><h2 class="text-2xl font-bold mt-2">Jogo em pausa</h2><p class="text-sm text-sky-100">O teu progresso está guardado</p></div>
+    <div class="bg-white text-slate-800 rounded-3xl p-4 text-center">
+      <div class="h-32 rounded-2xl bg-gradient-to-b from-emerald-200 to-emerald-700 flex items-end justify-center">${bird('w-28 h-24')}</div>
+      <p class="italic mt-3">«A Freira está a respirar fundo na sombra dos loureiros… Respira fundo também.»</p>
+    </div>
+    <div class="bg-white text-slate-800 rounded-3xl p-4 flex justify-between items-center"><div><div class="text-[12px] text-slate-500">Missão atual</div><div class="font-bold">${p.nome}</div></div><div class="text-right"><div class="text-[12px] text-slate-500">Penas</div><div class="font-bold">${penas()}/10</div></div></div>
+    ${btn('▶ Retomar missão', 'back()', 'bg-secondary hover:bg-secondary-dark text-white')}
+    <div class="grid grid-cols-2 gap-2">
+      <button onclick="go('instrucoes')" class="py-3 rounded-2xl bg-white/15 font-bold">📖 Instruções</button>
+      <button onclick="go('opcoes')" class="py-3 rounded-2xl bg-white/15 font-bold">⚙️ Opções</button>
+    </div>
+    <button onclick="stack=[]; go('menu')" class="w-full py-2 text-sm font-semibold text-orange-200">Voltar ao menu principal</button>
+  </div>`;
+},
+
+opcoes: () => {
+  const sw = (on, fn, label, sub) => `<button onclick="${fn}" role="switch" aria-checked="${on}" class="w-full flex items-center justify-between gap-3 py-2 text-left">
+    <span><span class="block font-semibold">${label}</span><span class="block text-sm text-slate-500">${sub}</span></span>
+    <span class="shrink-0 w-12 h-7 rounded-full p-1 transition ${on ? 'bg-secondary-dark' : 'bg-slate-300'}"><span class="block w-5 h-5 rounded-full bg-white shadow transition ${on ? 'translate-x-5' : ''}"></span></span></button>`;
+  return `
+  <div class="p-4 space-y-4">
+    ${card(`<h3 class="font-bold text-lg">🔊 Áudio e paisagem sonora</h3>
+      ${sw(state.music, 'setMusic()', 'Música ambiente', 'Brisa do oceano e floresta (som sintetizado)')}
+      ${sw(state.sfx, 'setSfx()', 'Efeitos sonoros', 'Canto da Freira, cliques e conquistas')}
+      <label class="block pt-1"><span class="flex justify-between text-sm font-semibold"><span>Volume</span><span id="vol-pct">${Math.round(state.volume * 100)}%</span></span>
+      <input type="range" min="0" max="1" step="0.05" value="${state.volume}" oninput="setVol(this.value)" class="w-full accent-[#1E5F8B]"></label>
+      <div class="flex gap-2 pt-2">${[['🐦', 'playBirdChirp'], ['🎺', 'playFanfare'], ['🔳', 'playScanBeep']].map(([i, f]) => `<button onclick="sfx('${f}')" class="flex-1 py-2 rounded-xl bg-slate-100 font-semibold">${i} Testar</button>`).join('')}</div>`)}
+    ${card(`<h3 class="font-bold text-lg">🌐 Idioma</h3><div class="mt-2 space-y-1.5">
+      ${[['Português', true], ['English', false], ['Français', false], ['Deutsch', false], ['Español', false]].map(([l, on]) => `<button onclick="${on ? '' : "toast('Tradução: em breve.')"}" class="w-full flex justify-between rounded-xl px-3 py-2.5 ${on ? 'bg-primary-light font-bold text-primary' : 'bg-slate-50'}"><span>${l}</span><span>${on ? '✓' : ''}</span></button>`).join('')}</div>`)}
+    ${card(`<h3 class="font-bold text-lg">🧭 Exploração</h3>
+      ${sw(state.familyMode, 'setFamily()', 'Modo Família', 'Mostrar só percursos fáceis e seguros')}
+      ${sw(state.radar, 'state.radar=!state.radar; render(true)', 'Radar de multidões', 'Avisar quando um miradouro está cheio')}`)}
+    ${card(`<h3 class="font-bold text-lg">ℹ️ Créditos</h3><p class="text-sm text-slate-600 mt-1">Projeto académico (UMa · SGM 2026/27) para o Desafio 8 da Startup Madeira, programa OpenInnoMAC. Locais, parceiros e números são exemplos.</p>
+      <button onclick="resetProgress()" class="mt-3 w-full py-3 rounded-2xl ${resetArmed ? 'bg-terracotta text-white' : 'bg-terracotta-light text-terracotta-dark'} font-bold">${resetArmed ? 'Toca outra vez para confirmar' : '↺ Repor todo o progresso'}</button>`)}
+    ${btn('Guardar e voltar ao mapa', "toast('Opções guardadas.'); go('mapa')")}
+  </div>`;
+},
+
+instrucoes: () => `
+  <div class="p-4 space-y-4">
+    ${card(`<div class="flex gap-3"><div class="flex-1"><div class="text-[12px] font-bold text-secondary-dark uppercase">Manual do Explorador · 6 passos</div><h2 class="text-2xl font-bold">Como jogar a Missão Freira</h2>
+      <p class="text-[15px] text-slate-600 mt-1">Alivia os picos mais cheios e ajuda a Freira a recuperar as suas penas.</p></div><div class="w-20 h-20 shrink-0 rounded-2xl bg-primary-light flex items-center justify-center">${bird('w-16 h-14')}</div></div>`)}
+    ${[
+      ['🧭', 'Descobre no mapa', 'Os pontos vermelhos estão cheios (Pico do Arieiro, 94%). Escolhe os pontos verdes calmos.'],
+      ['🥾', 'Explora e caminha', 'Ganhas 2× pontos se visitares fora das horas de ponta (por exemplo, 08:00–11:30).'],
+      ['🔳', 'Faz check-in', 'No local, lê o QR code no marco de madeira ou valida por GPS (raio de 50 m).'],
+      ['🪶', 'Devolve penas à Freira', `Cada lugar calmo devolve 1 pena. Recolhe as 10 para salvar o ninho! Tens ${penas()}/10.`],
+      ['🎁', 'Desfruta de prémios', 'Usa os pontos em parceiros locais: cafés, produtores e artesãos (exemplos).'],
+      ['🧺', 'Conhece a Madeira autêntica', 'Visita artesãos e produtores, faz desafios com as crianças e participa nas festas da época.']
+    ].map(([i, t, d], n) => card(`<div class="flex gap-3"><span class="w-10 h-10 shrink-0 rounded-full bg-primary text-white font-bold flex items-center justify-center">${n + 1}</span>
+      <div><div class="font-bold text-lg">${i} ${t}</div><p class="text-[15px] text-slate-600">${d}</p></div></div>`)).join('')}
+    ${card(`<p class="text-sm text-slate-700">💡 <b>Dica:</b> podes pausar a qualquer momento (botão II). O progresso fica guardado, mesmo sem rede.</p>`, 'bg-primary-light border-sky-200')}
+    ${btn('Entendido, vamos começar! →', "state.onboarded=true; go('mapa')")}
+  </div>`
+};
+
+function placeCard(id, p) {
+  const done = isVisited(id);
+  return `<article class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100">
+    <button onclick="openPlace('${id}')" class="block w-full h-32 bg-gradient-to-br ${p.grad} relative text-6xl" aria-label="Abrir ${p.nome}">
+      <span>${p.emoji}</span>
+      <span class="absolute top-2 left-2 flex flex-wrap gap-1">${p.cats.map(c => chip(CATS[c].icon + ' ' + CATS[c].label, 'bg-white/90 text-slate-800 text-[11px]')).join('')}</span>
+      <span class="absolute bottom-2 left-2">${chip('📍 ' + p.dist, 'bg-black/45 text-white text-[11px]')}</span>
+      ${done ? `<span class="absolute top-2 right-2">${chip('✓ Visitado', 'bg-pena text-slate-900 text-[11px]')}</span>` : ''}
+    </button>
+    <div class="p-4">
+      <h3 class="text-lg font-bold">${p.nome}${id === 'camacha' ? '' : ''}</h3><div class="text-sm text-slate-500">${p.local}</div>
+      <p class="text-[15px] text-slate-600 mt-1 leading-snug">${p.desc}</p>
+      <div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm bg-slate-50 rounded-xl px-3 py-2">
+        <span>🪶 <b>+1 pena</b></span><span>⭐ <b>+${p.calmo ? 40 : 20} pontos</b></span><span>⏱️ ${p.tempo}</span>
+      </div>
+      <div class="mt-2 text-sm font-semibold ${p.calmo ? 'text-secondary-dark' : 'text-amber-700'}">● ${p.estado}${p.calmo ? ' · 2× pontos agora' : ''}</div>
+      <div class="mt-3">${btn(done ? '✓ Ver missão' : id === 'camacha' ? 'Ver Oficina →' : 'Aceitar Missão →', `openPlace('${id}')`, done ? 'bg-primary-light text-primary' : 'bg-primary hover:bg-primary-dark text-white')}</div>
+    </div>
+  </article>`;
+}
+
+// Arranque: o som só pode começar depois do primeiro toque
+Object.assign(state, { music: true, sfx: true, muted: false, volume: 0.75 });
+window.addEventListener('click', () => { try { SoundSystem.init(); } catch (e) {} }, { once: true });
+render();
+
+</script>
+</body>
+</html>

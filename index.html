@@ -544,7 +544,7 @@ const PLACES = {
     short: 'Camacha (vime)', de: 'da Camacha',
     nome: 'Oficina de Vime', local: 'Camacha', cats: ['artesanato', 'familias'],
     calmo: true, kids: true, idade: '4+', dist: '1,2 km · Fácil', tempo: '~45 min',
-    emoji: '🧺', grad: 'from-amber-600 via-amber-800 to-stone-900',
+    emoji: '🧺', img: 'img/oficina-vime.png', grad: 'from-amber-600 via-amber-800 to-stone-900',
     desc: 'Vê como se fazem cestos de vime à mão. Ideal para crianças.',
     estado: 'Muito calmo · Sem filas', gps: '12 m da oficina', carimbo: 'vime',
     parceiro: { nome: 'Oficina de Vime (exemplo)', oferta: '10% em cestos e brinquedos de vime' },
@@ -554,7 +554,7 @@ const PLACES = {
     short: 'Ponta do Pargo', de: 'do Farol',
     nome: 'Farol da Ponta do Pargo', local: 'Ponta do Pargo · Calheta', cats: ['natureza'],
     calmo: true, kids: false, idade: '6+', dist: 'a 18 km · Costa Oeste', tempo: '~35 min a pé',
-    emoji: '🗼', grad: 'from-orange-300 via-rose-500 to-sky-900',
+    emoji: '🌅', img: 'img/farol.png', grad: 'from-orange-300 via-rose-500 to-sky-900',
     desc: 'Falésias do oeste sem autocarros de turistas. Ganha a pena do Vento Atlântico.',
     aviso: 'Falésia — mantém as crianças perto', estado: 'Calmo', gps: '38 m do miradouro',
     parceiro: { nome: 'Café «O Farol» (exemplo)', oferta: '15% em café e bolo do caco' },
@@ -740,6 +740,12 @@ const progressBar = (n, total = 10, cls = 'bg-primary') =>
 const segments = n => `<div class="flex gap-1">${Array.from({ length: 10 }, (_, i) =>
   `<div class="flex-1 h-2 rounded-full ${i < n ? 'bg-terracotta' : 'bg-slate-200'}"></div>`).join('')}</div>`;
 
+function hero(p, h = 'h-32', extra = '') {
+  return p.img
+    ? `<img src="${p.img}" alt="${p.nome}" class="absolute inset-0 w-full h-full object-cover" ${extra}>`
+    : `<span class="absolute inset-0 flex items-center justify-center text-6xl">${p.emoji}</span>`;
+}
+
 function bird(cls = 'w-28 h-24') {
   return `<svg viewBox="0 0 160 120" class="${cls}" role="img" aria-label="Freira-da-Madeira, a mascote">
     <path d="M22 66 L4 56 L10 78 Z" fill="#3A4750"/>
@@ -911,10 +917,8 @@ onboarding: () => `
 
 menu: () => `
   <div class="p-4 space-y-3">
-    <div class="rounded-[28px] bg-gradient-to-br from-primary to-primary-dark text-white p-4 flex items-center gap-3">
-      <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center">${bird('w-14 h-12')}</div>
-      <div><div class="text-xl font-extrabold">Missão Freira</div><div class="text-sm text-sky-100">Ajuda a Freira a encontrar os recantos calmos da ilha.</div></div>
-    </div>
+    <img src="img/menu-picos.png" alt="Picos da Madeira sobre o mar de nuvens" class="w-full rounded-[28px] shadow">
+    <div class="text-center"><div class="text-2xl font-extrabold text-primary-dark">Missão Freira</div><div class="text-sm text-slate-600">Ajuda a Freira a encontrar os recantos calmos da ilha e escapa às multidões.</div></div>
     <button onclick="go('mapa')" class="w-full text-left rounded-2xl bg-primary-dark text-white p-4">
       <div class="flex justify-between font-bold"><span>▶ Continuar Aventura</span><span>→</span></div>
       <div class="text-sm text-sky-100 mt-0.5">Último local: ${state.visited[state.visited.length - 1].nome}</div>
@@ -997,8 +1001,8 @@ local: () => {
   const p = PLACES.camacha;
   return `
   <div class="p-4 space-y-4">
-    <div class="h-48 rounded-3xl bg-gradient-to-br ${p.grad} relative flex items-center justify-center text-7xl shadow">
-      🏚️🧺
+    <div class="h-56 rounded-3xl bg-gradient-to-br ${p.grad} relative overflow-hidden shadow">
+      ${hero(p, '', 'style="object-position:50% 30%"')}
       <span class="absolute bottom-3 left-3">${chip('📷 Fachada da oficina', 'bg-black/40 text-white')}</span>
     </div>
     <div class="flex flex-wrap gap-1.5">${chip('🧺 Artesanato', 'bg-amber-100 text-amber-900')}${chip('👨‍👩‍👧 Ideal para famílias', 'bg-primary-light text-primary')}${chip('🍃 Calmo (2× pontos)', 'bg-secondary-light text-secondary-dark')}</div>
@@ -1030,6 +1034,7 @@ oficio: () => `
     ${card(`<div class="flex gap-3 items-start"><div class="w-14 h-14 shrink-0 rounded-full bg-primary-light flex items-center justify-center">${bird('w-12 h-10')}</div>
       <div><div class="text-[12px] font-bold text-secondary-dark uppercase">Tradição viva da Camacha</div><h2 class="text-xl font-bold">A Arte do Vime</h2>
       <p class="text-[15px] text-slate-600 leading-snug mt-1">O vime é um ramo fino e flexível. Os artesãos da Camacha transformam-no em cestos, cadeiras e brinquedos.</p></div></div>`)}
+    <div class="relative h-44 rounded-3xl overflow-hidden shadow"><img src="img/oficina-vime.png" alt="Artesão a entrançar vime" class="absolute inset-0 w-full h-full object-cover" style="object-position:50% 25%"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div><div class="absolute bottom-3 left-4 text-white"><div class="text-[12px] font-bold uppercase">Tradição artesanal da Madeira</div><div class="text-lg font-bold">O Coração Trançado da Ilha</div></div></div>
     <div class="flex items-center justify-between px-1"><h3 class="text-lg font-bold">Como se faz</h3>${chip('4 passos')}</div>
     ${[
       ['🌿', 'Corte do vime', 'Os ramos são cortados junto às ribeiras.'],
@@ -1060,7 +1065,7 @@ familia: () => `
     <h3 class="text-lg font-bold px-1">O que fazer juntos</h3>
     ${[['👀', 'Oficina de vime ao vivo', 'Ver um cesto a nascer pelas mãos dos artesãos.'],
        ['🔍', 'Caça ao vime escondido', 'Procurar 3 peças de vime pela vila. Ganha o emblema «Pequeno Explorador».'],
-       ['🥖', 'Pausa no café', 'Lanchar bolo do caco num café calmo.']]
+       ['🥖', 'Pausa no café', 'Lanchar bolo do caco num café calmo.<img src="img/cafe.png" alt="Café com bolo do caco" class="mt-2 w-full h-28 object-cover rounded-xl">']]
       .map(([i, t, d], n) => `<div class="flex gap-3 bg-white rounded-2xl p-3 border border-slate-100"><span class="w-8 h-8 shrink-0 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center">${n + 1}</span><div><div class="font-bold">${i} ${t}</div><div class="text-sm text-slate-600">${d}</div></div></div>`).join('')}
     ${card(`<div class="flex justify-between items-center"><h3 class="font-bold">Ponto de encontro</h3><span class="text-sm text-secondary-dark font-semibold">Largo da Achada</span></div>
       <svg viewBox="0 0 320 150" class="w-full mt-2 rounded-2xl bg-sky-50" role="img" aria-label="Esquema do centro da Camacha">
@@ -1091,6 +1096,7 @@ desafio: () => {
       <span class="shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center text-white text-sm ${state.tasks[i] ? 'bg-secondary-dark border-secondary-dark' : 'border-slate-300'}">${state.tasks[i] ? '✓' : ''}</span>
       <span><span class="block text-lg">${t.icon}</span><span class="block font-semibold ${state.tasks[i] ? 'line-through text-slate-500' : ''}">${t.t}</span><span class="block text-sm text-slate-500">${t.ex}</span></span>
     </button>`).join('')}
+    <div class="relative h-40 rounded-3xl overflow-hidden shadow"><img src="img/oficina-vime.png" alt="Oficina do vime da Camacha" class="absolute inset-0 w-full h-full object-cover" style="object-position:50% 40%"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div><div class="absolute bottom-3 left-4 text-white"><div class="text-[12px] font-bold uppercase text-green-200">Local histórico</div><div class="text-lg font-bold">Oficina do Vime da Camacha</div></div></div>
     <button onclick="toast('Fotografias: funcionalidade futura (ficam só no telemóvel).')" class="text-sm font-semibold text-primary px-1">📷 Adicionar foto (futuro)</button>
     ${card(`<h3 class="font-bold">🎁 Recompensas da missão</h3><ul class="mt-2 space-y-1.5 text-[15px]">
       <li>🪶 <b>+1 pena</b> · +40 pontos (20 × 2, calmo)</li><li>🧺 Carimbo <b>«Mestre do Vime»</b></li>
@@ -1106,7 +1112,7 @@ missao: () => {
   const p = PLACES[id], done = isVisited(id);
   return `
   <div class="p-4 space-y-4">
-    <div class="h-48 rounded-3xl bg-gradient-to-br ${p.grad} relative flex items-center justify-center text-7xl shadow">${p.emoji}
+    <div class="h-48 rounded-3xl bg-gradient-to-br ${p.grad} relative overflow-hidden shadow">${hero(p)}<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
       <div class="absolute top-3 left-3 flex gap-1">${chip(p.calmo ? '🍃 Lugar calmo' : '👥 Afluência moderada', 'bg-white/90 text-secondary-dark')}${p.calmo ? chip('⚡ 2× pontos', 'bg-white/90 text-terracotta-dark') : ''}</div>
       <div class="absolute bottom-3 left-4 text-white"><div class="text-[12px] font-bold uppercase">${p.local}</div><div class="text-2xl font-bold">${p.nome}</div></div>
     </div>
@@ -1134,11 +1140,11 @@ checkin: () => {
   const p = PLACES[state.mission];
   return `
   <div class="min-h-full text-white p-4 space-y-4">
-    <div class="relative h-72 rounded-3xl overflow-hidden bg-gradient-to-br ${p.grad} flex items-center justify-center">
+    <div class="relative h-72 rounded-3xl overflow-hidden bg-gradient-to-br ${p.grad} flex items-center justify-center">${p.img ? `<img src="${p.img}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-80">` : ''}
       <div class="absolute inset-6 border-2 border-white/80 rounded-2xl"></div>
       ${scanning ? `<div class="scanline absolute left-8 right-8 h-0.5 bg-pena shadow-[0_0_12px_#E8C547]"></div>` : ''}
-      <div class="text-center"><div class="w-24 h-24 mx-auto bg-white rounded-xl grid grid-cols-5 gap-0.5 p-2">${Array.from({ length: 25 }, (_, i) => `<div class="${[0, 1, 3, 4, 5, 7, 9, 12, 15, 16, 18, 20, 21, 23, 24].includes(i) ? 'bg-slate-900' : ''}"></div>`).join('')}</div>
-      <div class="mt-3 text-sm font-semibold">${scanning ? 'A ler o código…' : 'Alinha o código QR do marco no visor'}</div></div>
+      <div class="relative text-center"><div class="w-24 h-24 mx-auto bg-white rounded-xl grid grid-cols-5 gap-0.5 p-2">${Array.from({ length: 25 }, (_, i) => `<div class="${[0, 1, 3, 4, 5, 7, 9, 12, 15, 16, 18, 20, 21, 23, 24].includes(i) ? 'bg-slate-900' : ''}"></div>`).join('')}</div>
+      <div class="mt-3 text-sm font-semibold bg-black/50 rounded-full px-3 py-1 inline-block">${scanning ? 'A ler o código…' : 'Alinha o código QR do marco no visor'}</div></div>
       <span class="absolute top-3 left-3">${chip('● Modo verificação', 'bg-black/50 text-white')}</span>
     </div>
     <div class="bg-white text-slate-800 rounded-3xl p-4 space-y-3">
@@ -1266,7 +1272,7 @@ pausa: () => {
   <div class="min-h-full bg-gradient-to-b from-[#3E5A6A] to-[#24343D] text-white p-4 space-y-4">
     <div class="text-center pt-4"><div class="mx-auto w-14 h-14 rounded-full bg-white/15 flex items-center justify-center text-xl font-bold">II</div><h2 class="text-2xl font-bold mt-2">Jogo em pausa</h2><p class="text-sm text-sky-100">O teu progresso está guardado</p></div>
     <div class="bg-white text-slate-800 rounded-3xl p-4 text-center">
-      <div class="h-32 rounded-2xl bg-gradient-to-b from-emerald-200 to-emerald-700 flex items-end justify-center">${bird('w-28 h-24')}</div>
+      <div class="h-36 rounded-2xl relative overflow-hidden"><img src="img/laurissilva.png" alt="Laurissilva" class="absolute inset-0 w-full h-full object-cover"></div>
       <p class="italic mt-3">«A Freira está a respirar fundo na sombra dos loureiros… Respira fundo também.»</p>
     </div>
     <div class="bg-white text-slate-800 rounded-3xl p-4 flex justify-between items-center"><div><div class="text-[12px] text-slate-500">Missão atual</div><div class="font-bold">${p.nome}</div></div><div class="text-right"><div class="text-[12px] text-slate-500">Penas</div><div class="font-bold">${penas()}/10</div></div></div>
@@ -1314,7 +1320,7 @@ instrucoes: () => `
       ['🎁', 'Desfruta de prémios', 'Usa os pontos em parceiros locais: cafés, produtores e artesãos (exemplos).'],
       ['🧺', 'Conhece a Madeira autêntica', 'Visita artesãos e produtores, faz desafios com as crianças e participa nas festas da época.']
     ].map(([i, t, d], n) => card(`<div class="flex gap-3"><span class="w-10 h-10 shrink-0 rounded-full bg-primary text-white font-bold flex items-center justify-center">${n + 1}</span>
-      <div><div class="font-bold text-lg">${i} ${t}</div><p class="text-[15px] text-slate-600">${d}</p></div></div>`)).join('')}
+      <div class="flex-1"><div class="font-bold text-lg">${i} ${t}</div><p class="text-[15px] text-slate-600">${d}</p>${n === 1 ? '<img src="img/laurissilva.png" alt="Trilho na Laurissilva" class="mt-2 w-full h-28 object-cover rounded-xl">' : n === 4 ? '<img src="img/cafe.png" alt="Café local com bolo do caco" class="mt-2 w-full h-28 object-cover rounded-xl">' : ''}</div></div>`)).join('')}
     ${card(`<p class="text-sm text-slate-700">💡 <b>Dica:</b> podes pausar a qualquer momento (botão II). O progresso fica guardado, mesmo sem rede.</p>`, 'bg-primary-light border-sky-200')}
     ${btn('Entendido, vamos começar! →', "state.onboarded=true; go('mapa')")}
   </div>`
@@ -1323,8 +1329,8 @@ instrucoes: () => `
 function placeCard(id, p) {
   const done = isVisited(id);
   return `<article class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100">
-    <button onclick="openPlace('${id}')" class="block w-full h-32 bg-gradient-to-br ${p.grad} relative text-6xl" aria-label="Abrir ${p.nome}">
-      <span>${p.emoji}</span>
+    <button onclick="openPlace('${id}')" class="block w-full h-36 bg-gradient-to-br ${p.grad} relative overflow-hidden" aria-label="Abrir ${p.nome}">
+      ${hero(p)}
       <span class="absolute top-2 left-2 flex flex-wrap gap-1">${p.cats.map(c => chip(CATS[c].icon + ' ' + CATS[c].label, 'bg-white/90 text-slate-800 text-[11px]')).join('')}</span>
       <span class="absolute bottom-2 left-2">${chip('📍 ' + p.dist, 'bg-black/45 text-white text-[11px]')}</span>
       ${done ? `<span class="absolute top-2 right-2">${chip('✓ Visitado', 'bg-pena text-slate-900 text-[11px]')}</span>` : ''}

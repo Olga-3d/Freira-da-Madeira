@@ -564,7 +564,7 @@ const PLACES = {
     short: 'Achadas da Cruz', de: 'das Achadas',
     nome: 'Achadas da Cruz', local: 'Porto Moniz', cats: ['natureza'],
     calmo: true, kids: false, idade: '10+', dist: 'a 24 km · Noroeste', tempo: 'teleférico + 30 min',
-    emoji: '🚡', grad: 'from-sky-300 via-teal-600 to-slate-800',
+    emoji: '🚡', img: 'img/achadas.svg', grad: 'from-sky-300 via-teal-600 to-slate-800',
     desc: 'Desce de teleférico até à fajã junto ao mar. Quase ninguém.',
     aviso: 'Teleférico muito inclinado', estado: 'Muito calmo', gps: '20 m do teleférico',
     pin: { x: 12, y: 38, label: 'Achadas da Cruz' }
@@ -573,7 +573,7 @@ const PLACES = {
     short: 'Fajã dos Padres', de: 'da Fajã',
     nome: 'Fajã dos Padres', local: 'Câmara de Lobos', cats: ['natureza', 'produtos'],
     calmo: true, kids: true, idade: '4+', dist: 'a 12 km · Costa Sul', tempo: 'teleférico · ~20 min',
-    emoji: '🥭', grad: 'from-lime-300 via-emerald-600 to-sky-800',
+    emoji: '🥭', img: 'img/faja.svg', grad: 'from-lime-300 via-emerald-600 to-sky-800',
     desc: 'Desce de teleférico até à fajã: mangas, vinho e mar calmo.',
     estado: 'Calmo', gps: '15 m do cais',
     parceiro: { nome: 'Bar da Fajã (exemplo)', oferta: 'Prova de fruta tropical' },
@@ -583,7 +583,7 @@ const PLACES = {
     short: 'Santana (colmo)', de: 'de Santana',
     nome: 'Casas de Colmo', local: 'Santana', cats: ['artesanato', 'familias'],
     calmo: true, kids: true, idade: '3+', dist: 'a 24 km · Costa Norte', tempo: '~40 min',
-    emoji: '🏠', grad: 'from-red-300 via-red-600 to-emerald-900',
+    emoji: '🏠', img: 'img/colmo.svg', grad: 'from-red-300 via-red-600 to-emerald-900',
     desc: 'Casinhas com telhado de palha, símbolo da Madeira. Conta as janelas!',
     estado: 'Calmo', gps: '10 m do núcleo', carimbo: 'colmo',
     pin: { x: 64, y: 24, label: 'Santana' }
@@ -592,7 +592,7 @@ const PLACES = {
     short: 'Porto da Cruz', de: 'do Engenho',
     nome: 'Engenho de Cana', local: 'Porto da Cruz', cats: ['produtos', 'familias'],
     calmo: false, kids: true, idade: '4+', dist: 'a 18 km · Costa Norte', tempo: '~50 min',
-    emoji: '🍯', grad: 'from-yellow-300 via-amber-600 to-stone-800',
+    emoji: '🍯', img: 'img/engenho.svg', grad: 'from-yellow-300 via-amber-600 to-stone-800',
     desc: 'Descobre como a cana-de-açúcar se transforma em mel de cana.',
     estado: 'Afluência moderada', gps: '25 m da entrada', carimbo: 'engenho',
     pin: { x: 91, y: 36, label: 'P. da Cruz' }
@@ -1052,9 +1052,9 @@ oficio: () => `
 
 familia: () => `
   <div class="p-4 space-y-4">
-    <div class="h-40 rounded-3xl bg-gradient-to-br from-sky-300 via-emerald-500 to-emerald-900 relative p-4 flex flex-col justify-end text-white shadow">
+    <div class="h-48 rounded-3xl bg-emerald-800 relative overflow-hidden p-4 flex flex-col justify-end text-white shadow"><img src="img/familia.svg" alt="Família a passear numa vila calma" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10"></div>
       <span class="absolute top-3 left-3">${chip('👨‍👩‍👧 Modo Família', 'bg-white/90 text-secondary-dark')}</span>
-            <h2 class="text-2xl font-bold">Passeio dos Pequenos Artesãos</h2><p class="text-sm">Descobre o vime entre sombras frescas e ruas calmas.</p>
+            <h2 class="relative text-2xl font-bold">Passeio dos Pequenos Artesãos</h2><p class="relative text-sm">Descobre o vime entre sombras frescas e ruas calmas.</p>
     </div>
     <div class="grid grid-cols-2 gap-2">
       ${[['🧒', 'Idade', '4–10 anos'], ['✅', 'Dificuldade', 'Fácil'], ['⏱️', 'Duração', '1 hora'], ['📏', 'Distância', '1,5 km']]
@@ -1250,7 +1250,7 @@ epoca: () => `
       <p class="text-[15px] text-slate-600">Descobre a ilha ao ritmo das colheitas e das festas populares. Visita fora do pico e ganha a rara <b class="text-terracotta-dark">Pena Dourada</b>!</p></div>
     <div class="rounded-[28px] bg-terracotta-dark text-white p-4 space-y-3">
       <div class="flex gap-2">${chip('● A decorrer', 'bg-white text-terracotta-dark')}${chip('2× pontos + Pena Dourada', 'bg-green-200 text-secondary-dark')}</div>
-      <div class="h-28 rounded-2xl bg-gradient-to-br from-amber-500 to-stone-800 flex items-center justify-center text-6xl">🌰🔥</div>
+      <img src="img/castanha.svg" alt="Castanhas assadas na Festa da Castanha" class="w-full h-32 object-cover rounded-2xl">
       <div class="flex justify-between items-end"><h3 class="text-xl font-bold">Festa da Castanha</h3><span class="text-sm">outubro–novembro</span></div>
       <p class="text-sm text-orange-100">Visita o vale do Curral das Freiras e prova castanhas assadas enquanto a serra descansa.</p>
       <div class="bg-black/20 rounded-2xl p-3 flex justify-between text-sm"><span>Bónus de preservação · horário matinal</span><b>+80 pts</b></div>

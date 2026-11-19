@@ -687,6 +687,7 @@ function render(keepScroll) {
   renderNav(m.nav);
   renderStrip();
   save();
+  try { history.replaceState(null, '', '#' + current); } catch (e) {}
 }
 
 function renderNav(active) {
@@ -1324,6 +1325,9 @@ function placeCard(id, p) {
 // Arranque: o som só pode começar depois do primeiro toque
 Object.assign(state, { music: true, sfx: true, muted: false, volume: 0.75 });
 window.addEventListener('click', () => { try { SoundSystem.init(); } catch (e) {} }, { once: true });
+// Cada ecrã tem o seu endereço (ex.: #mapa), útil para importar no Figma
+const startHash = location.hash.slice(1);
+if (META[startHash]) { current = startHash; stack = META[startHash].root || startHash === 'abertura' ? [] : ['mapa']; }
 render();
 
 </script>

@@ -554,7 +554,7 @@ const PLACES = {
     short: 'Ponta do Pargo', de: 'do Farol',
     nome: 'Farol da Ponta do Pargo', local: 'Ponta do Pargo · Calheta', cats: ['natureza'],
     calmo: true, kids: false, idade: '6+', dist: 'a 18 km · Costa Oeste', tempo: '~35 min a pé',
-    emoji: '🌅', img: 'img/farol.png', grad: 'from-orange-300 via-rose-500 to-sky-900',
+    emoji: '🌅', img: 'img/farol-foto.jpg', grad: 'from-orange-300 via-rose-500 to-sky-900',
     desc: 'Falésias do oeste sem autocarros de turistas. Ganha a pena do Vento Atlântico.',
     aviso: 'Falésia — mantém as crianças perto', estado: 'Calmo', gps: '38 m do miradouro',
     parceiro: { nome: 'Café «O Farol» (exemplo)', oferta: '15% em café e bolo do caco' },
@@ -564,7 +564,7 @@ const PLACES = {
     short: 'Achadas da Cruz', de: 'das Achadas',
     nome: 'Achadas da Cruz', local: 'Porto Moniz', cats: ['natureza'],
     calmo: true, kids: false, idade: '10+', dist: 'a 24 km · Noroeste', tempo: 'teleférico + 30 min',
-    emoji: '🚡', img: 'img/achadas.svg', grad: 'from-sky-300 via-teal-600 to-slate-800',
+    emoji: '🚡', img: 'img/achadas.jpg', grad: 'from-sky-300 via-teal-600 to-slate-800',
     desc: 'Desce de teleférico até à fajã junto ao mar. Quase ninguém.',
     aviso: 'Teleférico muito inclinado', estado: 'Muito calmo', gps: '20 m do teleférico',
     pin: { x: 12, y: 38, label: 'Achadas da Cruz' }
@@ -573,7 +573,7 @@ const PLACES = {
     short: 'Fajã dos Padres', de: 'da Fajã',
     nome: 'Fajã dos Padres', local: 'Câmara de Lobos', cats: ['natureza', 'produtos'],
     calmo: true, kids: true, idade: '4+', dist: 'a 12 km · Costa Sul', tempo: 'teleférico · ~20 min',
-    emoji: '🥭', img: 'img/faja.svg', grad: 'from-lime-300 via-emerald-600 to-sky-800',
+    emoji: '🥭', img: 'img/faja.jpg', grad: 'from-lime-300 via-emerald-600 to-sky-800',
     desc: 'Desce de teleférico até à fajã: mangas, vinho e mar calmo.',
     estado: 'Calmo', gps: '15 m do cais',
     parceiro: { nome: 'Bar da Fajã (exemplo)', oferta: 'Prova de fruta tropical' },
@@ -583,7 +583,7 @@ const PLACES = {
     short: 'Santana (colmo)', de: 'de Santana',
     nome: 'Casas de Colmo', local: 'Santana', cats: ['artesanato', 'familias'],
     calmo: true, kids: true, idade: '3+', dist: 'a 24 km · Costa Norte', tempo: '~40 min',
-    emoji: '🏠', img: 'img/colmo.svg', grad: 'from-red-300 via-red-600 to-emerald-900',
+    emoji: '🏠', img: 'img/colmo.jpg', grad: 'from-red-300 via-red-600 to-emerald-900',
     desc: 'Casinhas com telhado de palha, símbolo da Madeira. Conta as janelas!',
     estado: 'Calmo', gps: '10 m do núcleo', carimbo: 'colmo',
     pin: { x: 64, y: 24, label: 'Santana' }
@@ -592,7 +592,7 @@ const PLACES = {
     short: 'Porto da Cruz', de: 'do Engenho',
     nome: 'Engenho de Cana', local: 'Porto da Cruz', cats: ['produtos', 'familias'],
     calmo: false, kids: true, idade: '4+', dist: 'a 18 km · Costa Norte', tempo: '~50 min',
-    emoji: '🍯', img: 'img/engenho.svg', grad: 'from-yellow-300 via-amber-600 to-stone-800',
+    emoji: '🍯', img: 'img/engenho.jpg', grad: 'from-yellow-300 via-amber-600 to-stone-800',
     desc: 'Descobre como a cana-de-açúcar se transforma em mel de cana.',
     estado: 'Afluência moderada', gps: '25 m da entrada', carimbo: 'engenho',
     pin: { x: 91, y: 36, label: 'P. da Cruz' }
@@ -747,17 +747,7 @@ function hero(p, h = 'h-32', extra = '') {
 }
 
 function bird(cls = 'w-28 h-24') {
-  return `<svg viewBox="0 0 160 120" class="${cls}" role="img" aria-label="Freira-da-Madeira, a mascote">
-    <path d="M22 66 L4 56 L10 78 Z" fill="#3A4750"/>
-    <ellipse cx="72" cy="70" rx="52" ry="28" fill="#FAFBFC" stroke="#26323A" stroke-width="3"/>
-    <path d="M26 64 Q70 32 114 58 Q74 80 26 64 Z" fill="#3A4750"/>
-    <circle cx="116" cy="54" r="22" fill="#FAFBFC" stroke="#26323A" stroke-width="3"/>
-    <path d="M95 50 Q112 26 137 46 Q118 41 95 54 Z" fill="#3A4750"/>
-    <circle cx="122" cy="55" r="5" fill="#111827"/><circle cx="123.6" cy="53.4" r="1.6" fill="#fff"/>
-    <path d="M136 56 L153 61 L137 65 Z" fill="#26323A"/>
-    <line x1="62" y1="96" x2="60" y2="111" stroke="#7D8890" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="84" y1="96" x2="86" y2="111" stroke="#7D8890" stroke-width="3.5" stroke-linecap="round"/>
-  </svg>`;
+  return `<img src="img/freira-avatar.jpg" alt="Freira-da-Madeira, a mascote" class="${cls.replace(/h-\S+/, '')} aspect-square object-cover rounded-full">`;
 }
 
 function freiraSays(text, label = 'A Freira diz:') {
@@ -864,13 +854,13 @@ const SCREENS = {
 
 abertura: () => `
   <div class="p-4 space-y-4">
-    <div class="relative rounded-[28px] overflow-hidden bg-gradient-to-b from-[#3B2A26] via-[#7A3B2C] to-[#1E3A4C] text-white p-5 min-h-[270px] flex flex-col items-center justify-between">
-      <div class="w-full flex justify-between text-[12px] font-semibold">
-        ${chip('🌿 Lugares calmos', 'bg-white/15 text-white')}${chip('📶 Funciona sem rede', 'bg-white/15 text-white')}
+    <div class="relative rounded-[28px] overflow-hidden text-white p-4 h-72 flex flex-col justify-between shadow">
+      <img src="img/freira-oceano.jpg" alt="A Freira numa rocha junto ao mar" class="absolute inset-0 w-full h-full object-cover">
+      <div class="relative w-full flex justify-between text-[12px] font-semibold">
+        ${chip('🌿 Lugares calmos', 'bg-black/35 text-white')}${chip('📶 Funciona sem rede', 'bg-black/35 text-white')}
       </div>
-      <svg viewBox="0 0 400 120" class="absolute bottom-0 left-0 w-full" aria-hidden="true"><path d="M0 120 L0 70 L70 30 L130 75 L200 15 L270 70 L330 40 L400 80 L400 120 Z" fill="#2B3A44"/><path d="M0 120 L0 95 L90 80 L180 100 L260 85 L400 100 L400 120 Z" fill="#E8ECEB" opacity=".85"/></svg>
-      <button onclick="sfx('playBirdChirp'); toast('A Freira-da-Madeira só faz ninho nesta ilha!')" class="relative float" aria-label="Tocar na Freira">${bird('w-36 h-28')}</button>
-      <div class="relative bg-white text-slate-800 text-sm font-bold px-4 py-1.5 rounded-full shadow">«Olá! Vem descobrir a Madeira calma comigo?»</div>
+      <button onclick="sfx('playBirdChirp'); toast('A Freira-da-Madeira só faz ninho nesta ilha!')" class="absolute inset-x-0 top-14 bottom-16" aria-label="Tocar na Freira"></button>
+      <div class="relative self-center bg-white text-slate-800 text-sm font-bold px-4 py-1.5 rounded-full shadow">«Olá! Vem descobrir a Madeira calma comigo?»</div>
     </div>
     <div class="text-center space-y-1.5">
       <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Missão Freira</h2>
@@ -894,11 +884,9 @@ abertura: () => `
 
 onboarding: () => `
   <div class="p-4 space-y-4">
-    <div class="relative rounded-[28px] overflow-hidden bg-gradient-to-b from-slate-700 to-slate-900 text-white p-4 pt-3 min-h-[200px]">
-      ${chip('⛰️ Pico do Arieiro · 1818 m', 'bg-white/15 text-white')}
-      <div class="absolute right-6 top-12 w-14 h-14 rounded-full bg-rose-300/70"></div>
-      <svg viewBox="0 0 400 120" class="absolute bottom-0 left-0 w-full" aria-hidden="true"><path d="M0 120 L0 80 L80 40 L150 90 L230 20 L300 85 L400 50 L400 120 Z" fill="#1F2A30"/><path d="M0 120 L0 104 L400 96 L400 120 Z" fill="#E8ECEB"/></svg>
-      <div class="relative flex justify-center mt-6">${bird('w-28 h-24')}</div>
+    <div class="relative rounded-[28px] overflow-hidden text-white p-4 h-56 shadow">
+      <img src="img/freira-arieiro.jpg" alt="A Freira no Pico do Arieiro sobre o mar de nuvens" class="absolute inset-0 w-full h-full object-cover">
+      <span class="relative">${chip('⛰️ Pico do Arieiro · 1818 m', 'bg-black/40 text-white')}</span>
     </div>
     ${card(`
       <div class="flex items-center justify-between gap-2"><h2 class="text-xl font-bold">Freira-da-Madeira</h2>${chip('Espécie ameaçada', 'bg-terracotta-light text-terracotta-dark')}</div>
@@ -917,7 +905,7 @@ onboarding: () => `
 
 menu: () => `
   <div class="p-4 space-y-3">
-    <img src="img/menu-picos.png" alt="Picos da Madeira sobre o mar de nuvens" class="w-full rounded-[28px] shadow">
+    <img src="img/freira-oceano-voo.jpg" alt="A Freira a voar sobre o oceano" class="w-full h-48 object-cover rounded-[28px] shadow">
     <div class="text-center"><div class="text-2xl font-extrabold text-primary-dark">Missão Freira</div><div class="text-sm text-slate-600">Ajuda a Freira a encontrar os recantos calmos da ilha e escapa às multidões.</div></div>
     <button onclick="go('mapa')" class="w-full text-left rounded-2xl bg-primary-dark text-white p-4">
       <div class="flex justify-between font-bold"><span>▶ Continuar Aventura</span><span>→</span></div>
@@ -1052,7 +1040,7 @@ oficio: () => `
 
 familia: () => `
   <div class="p-4 space-y-4">
-    <div class="h-48 rounded-3xl bg-emerald-800 relative overflow-hidden p-4 flex flex-col justify-end text-white shadow"><img src="img/familia.svg" alt="Família a passear numa vila calma" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10"></div>
+    <div class="h-48 rounded-3xl bg-emerald-800 relative overflow-hidden p-4 flex flex-col justify-end text-white shadow"><img src="img/familia.jpg" alt="Família a passear numa vila calma" class="absolute inset-0 w-full h-full object-cover"><div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10"></div>
       <span class="absolute top-3 left-3">${chip('👨‍👩‍👧 Modo Família', 'bg-white/90 text-secondary-dark')}</span>
             <h2 class="relative text-2xl font-bold">Passeio dos Pequenos Artesãos</h2><p class="relative text-sm">Descobre o vime entre sombras frescas e ruas calmas.</p>
     </div>
@@ -1228,9 +1216,8 @@ caderneta: () => {
   <div class="p-4 space-y-4">
     ${card(`<div class="flex justify-between items-start"><div><h2 class="text-xl font-bold">A Plumagem da Freira</h2><p class="text-sm text-slate-500">Recupera penas em lugares calmos</p></div>
       <div class="text-right"><div class="text-2xl font-extrabold text-primary">${state.pontos}</div><div class="text-[12px] font-semibold text-slate-500">pontos disponíveis</div></div></div>
-      <div class="mt-3 rounded-2xl bg-gradient-to-b from-sky-100 to-sky-200 h-36 relative flex items-end justify-center overflow-hidden">
-        <svg viewBox="0 0 300 100" class="absolute bottom-0 w-full" aria-hidden="true"><path d="M0 100 L0 60 L80 20 L150 70 L220 10 L300 60 L300 100Z" fill="#8FA9BA"/></svg>
-        <div class="relative mb-4">${bird('w-28 h-24')}</div>
+      <div class="mt-3 rounded-2xl h-40 relative flex items-end justify-center overflow-hidden">
+        <img src="img/freira-arieiro.jpg" alt="A Freira sobre o mar de nuvens" class="absolute inset-0 w-full h-full object-cover">
         <span class="absolute top-2 right-3">${chip(`🪶 ${penas()}/10`, 'bg-terracotta text-white')}</span>
         <span class="absolute bottom-2">${chip(penas() >= 4 ? 'A Freira está mais calma!' : 'A Freira precisa de ajuda', 'bg-white/90 text-slate-700')}</span>
       </div>
@@ -1250,7 +1237,7 @@ epoca: () => `
       <p class="text-[15px] text-slate-600">Descobre a ilha ao ritmo das colheitas e das festas populares. Visita fora do pico e ganha a rara <b class="text-terracotta-dark">Pena Dourada</b>!</p></div>
     <div class="rounded-[28px] bg-terracotta-dark text-white p-4 space-y-3">
       <div class="flex gap-2">${chip('● A decorrer', 'bg-white text-terracotta-dark')}${chip('2× pontos + Pena Dourada', 'bg-green-200 text-secondary-dark')}</div>
-      <img src="img/castanha.svg" alt="Castanhas assadas na Festa da Castanha" class="w-full h-32 object-cover rounded-2xl">
+      <img src="img/castanha.jpg" alt="Castanhas assadas na Festa da Castanha" class="w-full h-32 object-cover rounded-2xl">
       <div class="flex justify-between items-end"><h3 class="text-xl font-bold">Festa da Castanha</h3><span class="text-sm">outubro–novembro</span></div>
       <p class="text-sm text-orange-100">Visita o vale do Curral das Freiras e prova castanhas assadas enquanto a serra descansa.</p>
       <div class="bg-black/20 rounded-2xl p-3 flex justify-between text-sm"><span>Bónus de preservação · horário matinal</span><b>+80 pts</b></div>
@@ -1272,7 +1259,7 @@ pausa: () => {
   <div class="min-h-full bg-gradient-to-b from-[#3E5A6A] to-[#24343D] text-white p-4 space-y-4">
     <div class="text-center pt-4"><div class="mx-auto w-14 h-14 rounded-full bg-white/15 flex items-center justify-center text-xl font-bold">II</div><h2 class="text-2xl font-bold mt-2">Jogo em pausa</h2><p class="text-sm text-sky-100">O teu progresso está guardado</p></div>
     <div class="bg-white text-slate-800 rounded-3xl p-4 text-center">
-      <div class="h-36 rounded-2xl relative overflow-hidden"><img src="img/laurissilva.png" alt="Laurissilva" class="absolute inset-0 w-full h-full object-cover"></div>
+      <div class="h-36 rounded-2xl relative overflow-hidden"><img src="img/freira-laurissilva.jpg" alt="A Freira a descansar na Laurissilva" class="absolute inset-0 w-full h-full object-cover"></div>
       <p class="italic mt-3">«A Freira está a respirar fundo na sombra dos loureiros… Respira fundo também.»</p>
     </div>
     <div class="bg-white text-slate-800 rounded-3xl p-4 flex justify-between items-center"><div><div class="text-[12px] text-slate-500">Missão atual</div><div class="font-bold">${p.nome}</div></div><div class="text-right"><div class="text-[12px] text-slate-500">Penas</div><div class="font-bold">${penas()}/10</div></div></div>

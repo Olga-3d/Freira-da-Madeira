@@ -577,7 +577,7 @@ const PLACES = {
     desc: 'Desce de teleférico até à fajã: mangas, vinho e mar calmo.',
     estado: 'Calmo', gps: '15 m do cais',
     parceiro: { nome: 'Bar da Fajã (exemplo)', oferta: 'Prova de fruta tropical' },
-    pin: { x: 45, y: 72, label: 'Fajã dos Padres' }
+    pin: { x: 40, y: 74, label: 'Fajã dos Padres' }
   },
   colmo: {
     short: 'Santana (colmo)', de: 'de Santana',
@@ -976,7 +976,7 @@ mapa: () => {
         <span><span class="inline-block w-2 h-2 rounded-full bg-pena"></span> Visitado</span>
       </div>
     </div>
-    <div class="flex items-end justify-between px-1">
+    <div class="flex items-end justify-between gap-3 px-1">
       <div><h2 class="text-xl font-bold">${filtered ? 'Rotas recomendadas' : 'Missões calmas'}</h2><p class="text-sm text-slate-500">Descobre lugares calmos e cheios de história</p></div>
       <span class="text-sm font-bold text-primary whitespace-nowrap">${list.length} sugest${list.length === 1 ? 'ão' : 'ões'}</span>
     </div>

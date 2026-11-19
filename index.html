@@ -1056,16 +1056,7 @@ familia: () => `
        ['🥖', 'Pausa no café', 'Lanchar bolo do caco num café calmo.<img src="img/cafe.png" alt="Café com bolo do caco" class="mt-2 w-full h-28 object-cover rounded-xl">']]
       .map(([i, t, d], n) => `<div class="flex gap-3 bg-white rounded-2xl p-3 border border-slate-100"><span class="w-8 h-8 shrink-0 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center">${n + 1}</span><div><div class="font-bold">${i} ${t}</div><div class="text-sm text-slate-600">${d}</div></div></div>`).join('')}
     ${card(`<div class="flex justify-between items-center"><h3 class="font-bold">Ponto de encontro</h3><span class="text-sm text-secondary-dark font-semibold">Largo da Achada</span></div>
-      <svg viewBox="0 0 320 150" class="w-full mt-2 rounded-2xl bg-sky-50" role="img" aria-label="Esquema do centro da Camacha">
-        <path d="M10 120 Q120 70 310 40" stroke="#D5DEE5" stroke-width="16" fill="none" stroke-linecap="round"/>
-        <path d="M60 20 Q140 70 210 140" stroke="#D5DEE5" stroke-width="14" fill="none" stroke-linecap="round"/>
-        <rect x="18" y="14" width="78" height="34" rx="10" fill="#EDF7EB"/><text x="28" y="35" font-size="11" fill="#356A29" font-family="sans-serif">Jardim</text>
-        <path d="M100 52 L150 82 L230 64 L205 120" stroke="#1E5F8B" stroke-width="2.5" stroke-dasharray="5 5" fill="none"/>
-        <circle cx="100" cy="52" r="8" fill="#1E5F8B"/><text x="14" y="78" font-size="11" fill="#134363" font-family="sans-serif">Início: Relógio</text>
-        <circle cx="150" cy="82" r="13" fill="#FDE68A" stroke="#E8C547" stroke-width="3"/><text x="132" y="108" font-size="10" fill="#7B2613" font-family="sans-serif">Largo</text>
-        <circle cx="230" cy="64" r="8" fill="#BF5841"/><text x="242" y="62" font-size="11" fill="#7B2613" font-family="sans-serif">Oficina</text>
-        <circle cx="205" cy="120" r="8" fill="#356A29"/><text x="218" y="124" font-size="11" fill="#356A29" font-family="sans-serif">Café</text>
-      </svg><p class="text-[12px] text-slate-500 mt-1">Percurso a pé · 1,5 km · fácil (esquema simplificado)</p>`)}
+      <img src="img/mapa-camacha.jpg" alt="Mapa do centro da Camacha: Relógio, Largo da Achada, Oficina de Vime e Café Típico" class="w-full mt-2 rounded-2xl">`)}
     ${btn('Começar Atividade em Família →', "go('desafio')")}
     <p class="text-center text-[12px] text-slate-500">Podem pausar ou terminar a qualquer momento.</p>
   </div>`,

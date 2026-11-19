@@ -548,7 +548,7 @@ const PLACES = {
     desc: 'Vê como se fazem cestos de vime à mão. Ideal para crianças.',
     estado: 'Muito calmo · Sem filas', gps: '12 m da oficina', carimbo: 'vime',
     parceiro: { nome: 'Oficina de Vime (exemplo)', oferta: '10% em cestos e brinquedos de vime' },
-    pin: { x: 78, y: 64, label: 'Camacha' }
+    pin: { x: 67, y: 60, label: 'Camacha' }
   },
   farol: {
     short: 'Ponta do Pargo', de: 'do Farol',
@@ -558,7 +558,7 @@ const PLACES = {
     desc: 'Falésias do oeste sem autocarros de turistas. Ganha a pena do Vento Atlântico.',
     aviso: 'Falésia — mantém as crianças perto', estado: 'Calmo', gps: '38 m do miradouro',
     parceiro: { nome: 'Café «O Farol» (exemplo)', oferta: '15% em café e bolo do caco' },
-    pin: { x: 7, y: 57, label: 'Farol' }
+    pin: { x: 11, y: 50, label: 'Farol' }
   },
   achadas: {
     short: 'Achadas da Cruz', de: 'das Achadas',
@@ -567,7 +567,7 @@ const PLACES = {
     emoji: '🚡', img: 'img/achadas.jpg', grad: 'from-sky-300 via-teal-600 to-slate-800',
     desc: 'Desce de teleférico até à fajã junto ao mar. Quase ninguém.',
     aviso: 'Teleférico muito inclinado', estado: 'Muito calmo', gps: '20 m do teleférico',
-    pin: { x: 12, y: 38, label: 'Achadas da Cruz' }
+    pin: { x: 15, y: 32, label: 'Achadas da Cruz' }
   },
   faja: {
     short: 'Fajã dos Padres', de: 'da Fajã',
@@ -577,7 +577,7 @@ const PLACES = {
     desc: 'Desce de teleférico até à fajã: mangas, vinho e mar calmo.',
     estado: 'Calmo', gps: '15 m do cais',
     parceiro: { nome: 'Bar da Fajã (exemplo)', oferta: 'Prova de fruta tropical' },
-    pin: { x: 40, y: 74, label: 'Fajã dos Padres' }
+    pin: { x: 37, y: 69, label: 'Fajã dos Padres' }
   },
   colmo: {
     short: 'Santana (colmo)', de: 'de Santana',
@@ -586,7 +586,7 @@ const PLACES = {
     emoji: '🏠', img: 'img/colmo.jpg', grad: 'from-red-300 via-red-600 to-emerald-900',
     desc: 'Casinhas com telhado de palha, símbolo da Madeira. Conta as janelas!',
     estado: 'Calmo', gps: '10 m do núcleo', carimbo: 'colmo',
-    pin: { x: 64, y: 24, label: 'Santana' }
+    pin: { x: 52, y: 26, label: 'Santana' }
   },
   engenho: {
     short: 'Porto da Cruz', de: 'do Engenho',
@@ -595,11 +595,11 @@ const PLACES = {
     emoji: '🍯', img: 'img/engenho.jpg', grad: 'from-yellow-300 via-amber-600 to-stone-800',
     desc: 'Descobre como a cana-de-açúcar se transforma em mel de cana.',
     estado: 'Afluência moderada', gps: '25 m da entrada', carimbo: 'engenho',
-    pin: { x: 91, y: 36, label: 'P. da Cruz' }
+    pin: { x: 66, y: 41, label: 'P. da Cruz' }
   }
 };
 
-const CROWDED = { nome: 'Pico do Arieiro', info: '94% cheio · 45 min de espera', pin: { x: 50, y: 50, label: 'Arieiro 94%' } };
+const CROWDED = { nome: 'Pico do Arieiro', info: '94% cheio · 45 min de espera', pin: { x: 45, y: 46, label: 'Arieiro 94%' } };
 
 const STAMPS = {
   vime:    { nome: 'Mestre do Vime',    sitio: 'Camacha',           icon: '🧺' },
@@ -961,12 +961,8 @@ mapa: () => {
         <button onclick="toggleFilter('kids')" aria-pressed="${state.kids}" class="shrink-0 px-3 py-2 rounded-full text-sm font-semibold border ${state.kids ? 'bg-secondary-dark text-white border-secondary-dark' : 'bg-secondary-light text-secondary-dark border-green-200'}">🙂 Fácil para crianças</button>
       </div>
     </div>
-    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-b from-sky-100 to-sky-200 border border-sky-200" style="aspect-ratio: 2 / 1.15">
-      <svg viewBox="0 0 400 230" class="absolute inset-0 w-full h-full" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M18 120 C26 88 70 66 115 62 C165 56 205 50 255 58 C300 64 338 70 368 88 C392 100 398 112 384 120 C360 132 320 150 270 160 C215 172 160 172 110 162 C62 152 20 146 18 120 Z" fill="#CFE8C4" stroke="#8DBB7E" stroke-width="2"/>
-        <ellipse cx="220" cy="108" rx="70" ry="28" fill="#B4D6A4" opacity=".8"/>
-        
-      </svg>
+    <div class="relative rounded-3xl overflow-hidden bg-sky-700 shadow" style="aspect-ratio: 1376 / 768">
+      <img src="img/mapa-madeira.jpg" alt="Mapa ilustrado da ilha da Madeira" class="absolute inset-0 w-full h-full object-cover">
       <div class="absolute top-2 left-2">${chip('● Radar Calmo · Madeira', 'bg-white text-slate-800 shadow-sm')}</div>
       ${Object.entries(PLACES).map(([id, p]) => pin(id, p)).join('')}
       ${pin('arieiro', CROWDED, true)}
